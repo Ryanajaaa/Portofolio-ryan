@@ -113,14 +113,14 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center overflow-hidden pt-24"
+      className="relative flex min-h-screen items-center overflow-hidden pb-16 pt-24 sm:pb-0"
     >
-      <Container className="relative grid items-center gap-16 md:grid-cols-[1.1fr_0.9fr]">
+      <Container className="relative grid items-center gap-12 sm:gap-16 md:grid-cols-[1.1fr_0.9fr]">
         <motion.div
           variants={container}
           initial="hidden"
           animate="visible"
-          className="flex flex-col gap-6"
+          className="order-2 flex flex-col gap-6 md:order-1"
         >
           <motion.div variants={item}>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-xs text-muted">
@@ -131,14 +131,14 @@ export function Hero() {
 
           <motion.h1
             variants={item}
-            className="text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl"
+            className="text-3xl font-semibold leading-[1.15] tracking-tight sm:text-5xl md:text-6xl"
           >
             {siteConfig.name}
           </motion.h1>
 
           <motion.p
             variants={item}
-            className="font-heading text-xl font-medium text-muted sm:text-2xl"
+            className="font-heading text-lg font-medium text-muted sm:text-2xl"
           >
             <RoleCycler />
           </motion.p>
@@ -166,71 +166,81 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: -320 }}
-          animate={canFall ? { opacity: 1, y: 0 } : { opacity: 0, y: -320 }}
-          transition={{
-            y: {
-              type: "spring",
-              mass: 1.2,
-              stiffness: 170,
-              damping: 11,
-            },
-            opacity: { duration: 0.2 },
-          }}
-          onAnimationComplete={() => setSettled(true)}
-          className="relative mx-auto hidden w-full max-w-[260px] self-start md:block"
-        >
+        <div className="relative order-1 mx-auto w-full max-w-[200px] self-start sm:max-w-[240px] md:order-2 md:max-w-[260px]">
           <motion.div
-            ref={cardRef}
-            style={{ transformOrigin: "top center" }}
-            animate={settled ? { rotate: [-2.5, 2.5, -2.5] } : {}}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            initial={{ opacity: 0, y: -320, rotate: -8 }}
+            animate={
+              canFall
+                ? { opacity: 1, y: 0, rotate: 0 }
+                : { opacity: 0, y: -320, rotate: -8 }
+            }
+            transition={{
+              y: { type: "spring", mass: 1.2, stiffness: 170, damping: 11 },
+              rotate: { type: "spring", mass: 1, stiffness: 120, damping: 9 },
+              opacity: { duration: 0.2 },
+            }}
+            onAnimationComplete={() => setSettled(true)}
             className="relative"
           >
-            <div
-              className="absolute left-1/2 w-8 -translate-x-1/2 bg-gradient-to-b from-primary to-secondary"
-              style={{ top: -strapHeight, height: strapHeight }}
-            />
-            <div className="absolute left-1/2 -top-1 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-border bg-background" />
-
-            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
-              <div className="flex items-center justify-between bg-primary/10 px-4 py-2">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-primary">
-                  Staff ID
-                </span>
-                <span className="font-heading text-xs font-bold text-gradient">
-                  RA.dev
-                </span>
-              </div>
-
-              <div className="relative aspect-[3/4] w-full">
-                <Image
-                  src="/profile.jpeg"
-                  alt={siteConfig.name}
-                  fill
-                  sizes="260px"
-                  className="object-cover object-top"
-                  priority
-                />
-              </div>
-
-              <div className="flex flex-col items-center gap-1 border-t border-border px-4 py-5 text-center">
-                <h3 className="font-heading text-base font-semibold">
-                  {siteConfig.name}
-                </h3>
-              </div>
-            </div>
-
             <motion.div
-              className="absolute -left-8 bottom-16 rounded-2xl border border-border bg-card px-3 py-2 font-mono text-[10px] shadow-lg"
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              ref={cardRef}
+              style={{ transformOrigin: "top center" }}
+              animate={
+                settled
+                  ? { rotate: [-2.5, 2.5, -2.5], scaleX: 1, scaleY: 1 }
+                  : { scaleX: [1, 1.08, 1], scaleY: [1, 0.92, 1] }
+              }
+              transition={
+                settled
+                  ? { duration: 6, repeat: Infinity, ease: "easeInOut" }
+                  : { duration: 0.35, times: [0, 0.4, 1], ease: "easeOut" }
+              }
+              className="relative"
             >
-              My Skill is Never Give Up
+              <div
+                className="absolute left-1/2 w-6 -translate-x-1/2 bg-gradient-to-b from-primary to-secondary sm:w-8"
+                style={{ top: -strapHeight, height: strapHeight }}
+              />
+              <div className="absolute left-1/2 -top-1 h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-border bg-background sm:h-4 sm:w-4" />
+
+              <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
+                <div className="flex items-center justify-between bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2">
+                  <span className="font-mono text-[9px] uppercase tracking-widest text-primary sm:text-[10px]">
+                    Staff ID
+                  </span>
+                  <span className="font-heading text-[11px] font-bold text-gradient sm:text-xs">
+                    RA.dev
+                  </span>
+                </div>
+
+                <div className="relative aspect-[3/4] w-full">
+                  <Image
+                    src="/profile.jpeg"
+                    alt={siteConfig.name}
+                    fill
+                    sizes="(max-width: 640px) 200px, 260px"
+                    className="object-cover object-top"
+                    priority
+                  />
+                </div>
+
+                <div className="flex flex-col items-center gap-1 border-t border-border px-3 py-3 text-center sm:px-4 sm:py-5">
+                  <h3 className="font-heading text-sm font-semibold sm:text-base">
+                    {siteConfig.name}
+                  </h3>
+                </div>
+              </div>
+
+              <motion.div
+                className="absolute -left-4 bottom-12 hidden rounded-2xl border border-border bg-card px-3 py-2 font-mono text-[10px] shadow-lg sm:-left-8 sm:bottom-16 sm:block"
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              >
+                My Skill is Never Give Up
+              </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </Container>
     </section>
   );
