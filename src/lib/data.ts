@@ -16,7 +16,7 @@ export const siteConfig = {
   email: "ryan.andiya11@gmail.com",
   github: "https://github.com/ryanajaaa",
   linkedin: "https://www.linkedin.com/in/ryan-andiya-saputra-301ab3372/",
-  instagram: "https://www.instagram.com/ryanandiya/",
+  instagram: "https://www.instagram.com/ryanandiyaa_/",
   resumeUrl: "/resume.pdf",
   location: "Tangerang, Indonesia",
 };
