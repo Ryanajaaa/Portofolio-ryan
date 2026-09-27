@@ -6,8 +6,6 @@ import { motion } from "framer-motion";
 import { ArrowRight, Download, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { Spotlight } from "@/components/spotlight";
-import { AnimatedBackground } from "@/components/animated-background";
 import { siteConfig } from "@/lib/data";
 
 const container = {
@@ -62,9 +60,6 @@ export function Hero() {
       id="home"
       className="relative flex min-h-screen items-center overflow-hidden pt-24"
     >
-      <AnimatedBackground />
-      <Spotlight className="absolute inset-0" />
-
       <Container className="relative grid items-center gap-16 md:grid-cols-[1.1fr_0.9fr]">
         <motion.div
           variants={container}
@@ -129,7 +124,7 @@ export function Hero() {
               alt={siteConfig.name}
               fill
               sizes="384px"
-              className="object-cover"
+              className="object-cover object-top"
               priority
             />
           </div>
@@ -138,14 +133,14 @@ export function Hero() {
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           >
-            <span className="text-accent">●</span> Ryan Andiya 
+            <span className="text-accent">●</span> Building with AI
           </motion.div>
           <motion.div
             className="absolute -left-6 bottom-10 rounded-2xl border border-border bg-card px-4 py-3 font-mono text-xs shadow-lg"
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           >
-            My Skill is never give up
+            go build ./...
           </motion.div>
         </motion.div>
       </Container>

@@ -1,24 +1,24 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export function Spotlight({ className }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  function handleMove(e: React.MouseEvent<HTMLDivElement>) {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    el.style.setProperty("--x", `${x}px`);
-    el.style.setProperty("--y", `${y}px`);
-  }
+  useEffect(() => {
+    function handleMove(e: MouseEvent) {
+      const el = ref.current;
+      if (!el) return;
+      el.style.setProperty("--x", `${e.clientX}px`);
+      el.style.setProperty("--y", `${e.clientY}px`);
+    }
+    window.addEventListener("mousemove", handleMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMove);
+  }, []);
 
   return (
     <div
       ref={ref}
-      onMouseMove={handleMove}
       className={className}
       style={
         {

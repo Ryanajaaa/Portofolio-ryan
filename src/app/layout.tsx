@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AnimatedBackground } from "@/components/animated-background";
+import { Spotlight } from "@/components/spotlight";
 import "./globals.css";
 
 const geist = Geist({
@@ -93,6 +95,10 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
         >
+          <div className="pointer-events-none fixed inset-0 -z-10">
+            <AnimatedBackground />
+            <Spotlight className="absolute inset-0" />
+          </div>
           {children}
         </ThemeProvider>
         <script
