@@ -43,6 +43,7 @@ export interface Certificate {
   issuer: string;
   year: string;
   icon: string;
+  image: string;
 }
 
 export interface Repo {

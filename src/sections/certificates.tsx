@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { Award } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Reveal } from "@/components/reveal";
@@ -13,26 +14,37 @@ export function Certificates() {
       <Container>
         <SectionTitle eyebrow="Credentials" title="Certificates" />
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {certificates.map((cert, i) => (
             <Reveal key={cert.name} delay={(i % 3) * 0.08}>
               <motion.div
                 whileHover={{ y: -5 }}
-                className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-border bg-card p-5 transition-colors duration-300 hover:border-primary/50"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors duration-300 hover:border-primary/50 hover:shadow-[0_0_28px_-8px_rgba(124,58,237,0.4)]"
               >
-                <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-primary/10 blur-2xl transition-all duration-300 group-hover:bg-primary/20" />
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface text-lg">
-                  {cert.icon}
-                </span>
-                <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold">
-                    {cert.name}
-                  </h3>
-                  <p className="text-xs text-muted">
-                    {cert.issuer} &middot; {cert.year}
-                  </p>
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface">
+                  <Image
+                    src={cert.image}
+                    alt={cert.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                 </div>
-                <Award className="ml-auto h-4 w-4 shrink-0 text-muted/50 transition-colors group-hover:text-primary" />
+
+                <div className="flex flex-1 items-start gap-3 p-5">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface text-base">
+                    {cert.icon}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate text-sm font-semibold">
+                      {cert.name}
+                    </h3>
+                    <p className="text-xs text-muted">
+                      {cert.issuer} &middot; {cert.year}
+                    </p>
+                  </div>
+                  <ExternalLink className="h-4 w-4 shrink-0 text-muted/50 transition-colors group-hover:text-primary" />
+                </div>
               </motion.div>
             </Reveal>
           ))}
