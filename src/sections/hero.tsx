@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Download, Sparkles } from "lucide-react";
@@ -54,7 +54,62 @@ function RoleCycler() {
   );
 }
 
+function getAbsoluteTop(el: HTMLElement): number {
+  let top = 0;
+  let node: HTMLElement | null = el;
+  while (node) {
+    top += node.offsetTop;
+    node = node.offsetParent as HTMLElement | null;
+  }
+  return top;
+}
+
 export function Hero() {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [strapHeight, setStrapHeight] = useState(100);
+  const [canFall, setCanFall] = useState(false);
+  const [settled, setSettled] = useState(false);
+
+  const measureStrap = useCallback(() => {
+    if (cardRef.current) {
+      setStrapHeight(Math.max(getAbsoluteTop(cardRef.current), 0));
+    }
+  }, []);
+
+  useEffect(() => {
+    measureStrap();
+  }, [measureStrap]);
+
+  useEffect(() => {
+    function handleLoaderComplete() {
+      setCanFall(true);
+    }
+    window.addEventListener("loader-complete", handleLoaderComplete);
+    const fallback = setTimeout(() => setCanFall(true), 4000);
+
+    return () => {
+      window.removeEventListener("loader-complete", handleLoaderComplete);
+      clearTimeout(fallback);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", measureStrap);
+    window.addEventListener("load", measureStrap);
+
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(measureStrap);
+      ro.observe(document.body);
+    }
+
+    return () => {
+      window.removeEventListener("resize", measureStrap);
+      window.removeEventListener("load", measureStrap);
+      ro?.disconnect();
+    };
+  }, [measureStrap]);
+
   return (
     <section
       id="home"
@@ -112,35 +167,68 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] as const }}
-          className="relative mx-auto hidden aspect-square w-full max-w-sm md:block"
+          initial={{ opacity: 0, y: -320 }}
+          animate={canFall ? { opacity: 1, y: 0 } : { opacity: 0, y: -320 }}
+          transition={{
+            y: {
+              type: "spring",
+              mass: 1.2,
+              stiffness: 170,
+              damping: 11,
+            },
+            opacity: { duration: 0.2 },
+          }}
+          onAnimationComplete={() => setSettled(true)}
+          className="relative mx-auto hidden w-full max-w-[260px] self-start md:block"
         >
-          <div className="absolute inset-0 animate-float-slow rounded-[2.5rem] border border-border bg-card/60 backdrop-blur-sm" />
-          <div className="absolute inset-6 overflow-hidden rounded-[2rem] border border-border">
-            <Image
-              src="/profile.jpeg"
-              alt={siteConfig.name}
-              fill
-              sizes="384px"
-              className="object-cover object-top"
-              priority
-            />
-          </div>
           <motion.div
-            className="absolute -right-4 top-8 rounded-2xl border border-border bg-card px-4 py-3 font-mono text-xs shadow-lg"
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <span className="text-accent">●</span> Building with AI
-          </motion.div>
-          <motion.div
-            className="absolute -left-6 bottom-10 rounded-2xl border border-border bg-card px-4 py-3 font-mono text-xs shadow-lg"
-            animate={{ y: [0, 10, 0] }}
+            ref={cardRef}
+            style={{ transformOrigin: "top center" }}
+            animate={settled ? { rotate: [-2.5, 2.5, -2.5] } : {}}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="relative"
           >
-            go build ./...
+            <div
+              className="absolute left-1/2 w-8 -translate-x-1/2 bg-gradient-to-b from-primary to-secondary"
+              style={{ top: -strapHeight, height: strapHeight }}
+            />
+            <div className="absolute left-1/2 -top-1 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-border bg-background" />
+
+            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
+              <div className="flex items-center justify-between bg-primary/10 px-4 py-2">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-primary">
+                  Staff ID
+                </span>
+                <span className="font-heading text-xs font-bold text-gradient">
+                  RA.dev
+                </span>
+              </div>
+
+              <div className="relative aspect-[3/4] w-full">
+                <Image
+                  src="/profile.jpeg"
+                  alt={siteConfig.name}
+                  fill
+                  sizes="260px"
+                  className="object-cover object-top"
+                  priority
+                />
+              </div>
+
+              <div className="flex flex-col items-center gap-1 border-t border-border px-4 py-5 text-center">
+                <h3 className="font-heading text-base font-semibold">
+                  {siteConfig.name}
+                </h3>
+              </div>
+            </div>
+
+            <motion.div
+              className="absolute -left-8 bottom-16 rounded-2xl border border-border bg-card px-3 py-2 font-mono text-[10px] shadow-lg"
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            >
+              My Skill is Never Give Up
+            </motion.div>
           </motion.div>
         </motion.div>
       </Container>

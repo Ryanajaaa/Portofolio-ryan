@@ -3,6 +3,8 @@ import { Geist, Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AnimatedBackground } from "@/components/animated-background";
 import { Spotlight } from "@/components/spotlight";
+import { CommandPalette } from "@/components/command-palette";
+import { PageLoader } from "@/components/page-loader";
 import "./globals.css";
 
 const geist = Geist({
@@ -95,11 +97,13 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
         >
+          <PageLoader />
           <div className="pointer-events-none fixed inset-0 -z-10">
             <AnimatedBackground />
             <Spotlight className="absolute inset-0" />
           </div>
           {children}
+          <CommandPalette />
         </ThemeProvider>
         <script
           type="application/ld+json"
