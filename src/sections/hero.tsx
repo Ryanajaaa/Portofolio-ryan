@@ -2,11 +2,25 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  animate,
+  type PanInfo,
+  type AnimationPlaybackControls,
+} from "framer-motion";
 import { ArrowRight, Download, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/data";
+
+/* ====== Teks di ID card (silakan ubah sesuai keinginan) ====== */
+const CARD_TAG = "BACKEND DEVELOPER";
+const CARD_DESC =
+  "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.";
+const CARD_INITIALS = "RA";
+/* ============================================================== */
 
 const container = {
   hidden: {},
@@ -64,11 +78,34 @@ function getAbsoluteTop(el: HTMLElement): number {
   return top;
 }
 
+const strapUnits = Array.from({ length: 6 }, (_, i) => i);
+
 export function Hero() {
   const cardRef = useRef<HTMLDivElement>(null);
   const [strapHeight, setStrapHeight] = useState(100);
   const [canFall, setCanFall] = useState(false);
   const [settled, setSettled] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const cardRotate = useTransform(x, [-70, 70], [-14, 14]);
+  const cardRotateY = useTransform(x, [-70, 70], [22, -22]);
+  const cardRotateX = useTransform(y, [-10, 40], [6, -14]);
+  const shineX = useTransform(x, [-70, 70], [-140, 140]);
+
+  const strapLength = useTransform([x, y], (latest) => {
+    const [xv, yv] = latest as number[];
+    const dy = strapHeight + yv;
+    return Math.sqrt(xv * xv + dy * dy);
+  });
+  const strapAngle = useTransform([x, y], (latest) => {
+    const [xv, yv] = latest as number[];
+    const dy = strapHeight + yv;
+    return (Math.atan2(xv, dy) * 180) / Math.PI;
+  });
+
+  const idleControls = useRef<AnimationPlaybackControls | null>(null);
 
   const measureStrap = useCallback(() => {
     if (cardRef.current) {
@@ -109,6 +146,45 @@ export function Hero() {
       ro?.disconnect();
     };
   }, [measureStrap]);
+
+  const startIdleSway = useCallback(() => {
+    idleControls.current = animate(x, [-8, 8, -8], {
+      duration: 5,
+      repeat: Infinity,
+      ease: "easeInOut",
+    });
+  }, [x]);
+
+  useEffect(() => {
+    if (settled && !isDragging) {
+      startIdleSway();
+    }
+    return () => {
+      idleControls.current?.stop();
+    };
+  }, [settled, isDragging, startIdleSway]);
+
+  function handlePanStart() {
+    idleControls.current?.stop();
+    setIsDragging(true);
+  }
+
+  function handlePan(_: unknown, info: PanInfo) {
+    x.set(Math.max(-70, Math.min(70, info.offset.x * 0.6)));
+    y.set(Math.max(-10, Math.min(40, info.offset.y * 0.3)));
+  }
+
+  function handlePanEnd(_: unknown, info: PanInfo) {
+    setIsDragging(false);
+    const vx = Math.max(-40, Math.min(40, info.velocity.x * 0.03));
+    animate(x, [x.get() + vx, 0], {
+      type: "spring",
+      stiffness: 130,
+      damping: 7,
+      onComplete: startIdleSway,
+    });
+    animate(y, 0, { type: "spring", stiffness: 200, damping: 14 });
+  }
 
   return (
     <section
@@ -166,77 +242,133 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        <div className="relative order-1 mx-auto w-full max-w-[200px] self-start sm:max-w-[240px] md:order-2 md:max-w-[260px]">
+        <div className="relative order-1 mx-auto w-full max-w-[210px] self-start pt-4 sm:max-w-[250px] md:order-2 md:max-w-[270px]">
           <motion.div
-            initial={{ opacity: 0, y: -320, rotate: -8 }}
-            animate={
-              canFall
-                ? { opacity: 1, y: 0, rotate: 0 }
-                : { opacity: 0, y: -320, rotate: -8 }
-            }
+            initial={{ opacity: 0, y: -320 }}
+            animate={canFall ? { opacity: 1, y: 0 } : { opacity: 0, y: -320 }}
             transition={{
               y: { type: "spring", mass: 1.2, stiffness: 170, damping: 11 },
-              rotate: { type: "spring", mass: 1, stiffness: 120, damping: 9 },
               opacity: { duration: 0.2 },
             }}
             onAnimationComplete={() => setSettled(true)}
             className="relative"
           >
+            {/* Tali (lanyard) */}
+            <motion.div
+              className="absolute left-1/2 w-7 origin-top -translate-x-1/2 overflow-hidden rounded-sm bg-black sm:w-8"
+              style={{
+                top: -strapHeight,
+                height: strapLength,
+                rotate: strapAngle,
+              }}
+            >
+              <div className="flex flex-col items-center gap-6 py-2 text-white">
+                {strapUnits.map((i) => (
+                  <div key={i} className="flex flex-col items-center gap-2">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full border border-white text-[8px] font-bold sm:h-5 sm:w-5 sm:text-[9px]">
+                      {CARD_INITIALS.charAt(0)}
+                    </span>
+                    <span
+                      className="whitespace-nowrap text-[9px] font-semibold tracking-widest sm:text-[10px]"
+                      style={{ writingMode: "vertical-rl" }}
+                    >
+                      {siteConfig.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Card (bisa diseret & ditekan) */}
             <motion.div
               ref={cardRef}
-              style={{ transformOrigin: "top center" }}
+              style={{
+                x,
+                y,
+                rotate: cardRotate,
+                rotateY: cardRotateY,
+                rotateX: cardRotateX,
+                transformPerspective: 900,
+                transformOrigin: "50% 0%",
+                touchAction: "none",
+              }}
               animate={
-                settled
-                  ? { rotate: [-2.5, 2.5, -2.5], scaleX: 1, scaleY: 1 }
-                  : { scaleX: [1, 1.08, 1], scaleY: [1, 0.92, 1] }
+                !settled
+                  ? { scaleX: [1, 1.08, 1], scaleY: [1, 0.92, 1] }
+                  : undefined
               }
-              transition={
-                settled
-                  ? { duration: 6, repeat: Infinity, ease: "easeInOut" }
-                  : { duration: 0.35, times: [0, 0.4, 1], ease: "easeOut" }
-              }
-              className="relative"
+              transition={{ duration: 0.35, times: [0, 0.4, 1], ease: "easeOut" }}
+              onPanStart={settled ? handlePanStart : undefined}
+              onPan={settled ? handlePan : undefined}
+              onPanEnd={settled ? handlePanEnd : undefined}
+              className={`relative select-none ${
+                settled ? (isDragging ? "cursor-grabbing" : "cursor-grab") : ""
+              }`}
             >
-              <div
-                className="absolute left-1/2 w-6 -translate-x-1/2 bg-gradient-to-b from-primary to-secondary sm:w-8"
-                style={{ top: -strapHeight, height: strapHeight }}
-              />
-              <div className="absolute left-1/2 -top-1 h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-border bg-background sm:h-4 sm:w-4" />
-
-              <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
-                <div className="flex items-center justify-between bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2">
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-primary sm:text-[10px]">
-                    Staff ID
-                  </span>
-                  <span className="font-heading text-[11px] font-bold text-gradient sm:text-xs">
-                    RA.dev
-                  </span>
-                </div>
-
-                <div className="relative aspect-[3/4] w-full">
-                  <Image
-                    src="/profile.jpeg"
-                    alt={siteConfig.name}
-                    fill
-                    sizes="(max-width: 640px) 200px, 260px"
-                    className="object-cover object-top"
-                    priority
-                  />
-                </div>
-
-                <div className="flex flex-col items-center gap-1 border-t border-border px-3 py-3 text-center sm:px-4 sm:py-5">
-                  <h3 className="font-heading text-sm font-semibold sm:text-base">
-                    {siteConfig.name}
-                  </h3>
-                </div>
-              </div>
+              {/* Hook / klip hitam */}
+              <div className="absolute left-1/2 -top-2.5 z-10 h-4 w-3 -translate-x-1/2 rounded-full bg-black sm:-top-3 sm:h-5 sm:w-3.5" />
 
               <motion.div
-                className="absolute -left-4 bottom-12 hidden rounded-2xl border border-border bg-card px-3 py-2 font-mono text-[10px] shadow-lg sm:-left-8 sm:bottom-16 sm:block"
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                whileTap={settled ? { scale: 0.96 } : undefined}
+                transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-400 via-indigo-300/70 to-slate-600 p-[5px] shadow-2xl sm:p-[6px]"
               >
-                My Skill is Never Give Up
+                {/* Kartu emas */}
+                <div className="relative flex aspect-[59/86] flex-col gap-1 overflow-hidden rounded-md bg-gradient-to-br from-amber-200 via-amber-300 to-amber-500 p-1.5 sm:gap-1.5 sm:p-2">
+                  {/* Name plate */}
+                  <div className="flex items-center justify-between border border-amber-800/70 bg-amber-100/90 px-1.5 py-0.5 sm:px-2 sm:py-1">
+                    <span className="truncate font-serif text-[8px] font-bold uppercase tracking-wide text-zinc-900 sm:text-[11px]">
+                      {siteConfig.name}
+                    </span>
+                    <span className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-amber-900 bg-amber-50 font-serif text-[7px] font-bold text-zinc-900 sm:h-5 sm:w-5 sm:text-[8px]">
+                      {CARD_INITIALS}
+                    </span>
+                  </div>
+
+                  {/* Bintang */}
+                  <div className="flex justify-end gap-[2px] sm:gap-0.5">
+                    {Array.from({ length: 8 }, (_, i) => (
+                      <span
+                        key={i}
+                        className="h-1.5 w-1.5 rounded-full border border-red-900/60 bg-gradient-to-br from-orange-300 to-red-600 sm:h-2 sm:w-2"
+                      />
+                    ))}
+                  </div>
+
+                  {/* Foto */}
+                  <div className="relative aspect-square w-full border-2 border-zinc-500 bg-black">
+                    <Image
+                      src="/profile.jpeg"
+                      alt={siteConfig.name}
+                      fill
+                      sizes="(max-width: 640px) 200px, 260px"
+                      className="pointer-events-none object-cover object-top"
+                      priority
+                    />
+                  </div>
+
+                  {/* Tag + deskripsi */}
+                  <div className="flex flex-1 flex-col justify-between border border-amber-800/70 bg-amber-50/90 px-1.5 py-1 sm:px-2">
+                    <div>
+                      <p className="font-serif text-[7px] font-semibold text-zinc-900 sm:text-[9px]">
+                        [{CARD_TAG}]
+                      </p>
+                      <p className="line-clamp-4 text-[6px] leading-tight text-zinc-700 sm:text-[8px]">
+                        {CARD_DESC}
+                      </p>
+                    </div>
+                    <div className="flex justify-end gap-4 font-serif text-[7px] font-bold text-zinc-900 sm:text-[9px]">
+                      <span>ATK/</span>
+                      <span>DEF/</span>
+                    </div>
+                  </div>
+
+                  {/* Kilau yang ikut bergerak saat card digeser */}
+                  <motion.div
+                    className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-white/25 blur-md"
+                    style={{ x: shineX }}
+                  />
+                </div>
               </motion.div>
             </motion.div>
           </motion.div>
