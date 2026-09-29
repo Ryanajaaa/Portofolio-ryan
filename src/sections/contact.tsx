@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Github, Linkedin, Download, ArrowUpRight } from "lucide-react";
+import { Mail, Github, Linkedin, MessageCircle, Download, ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,12 @@ import { Reveal } from "@/components/reveal";
 import { siteConfig } from "@/lib/data";
 
 const cards = [
+  {
+    icon: MessageCircle,
+    label: "WhatsApp",
+    value: "082124804548",
+    href: siteConfig.whatsapp,
+  },
   {
     icon: Mail,
     label: "Email",
@@ -49,10 +55,10 @@ export function Contact() {
               help.
             </p>
             <div className="mt-2 flex flex-wrap justify-center gap-3">
-              <a href={`mailto:${siteConfig.email}`}>
+              <a href={siteConfig.whatsapp} target="_blank" rel="noreferrer">
                 <Button>
-                  <Mail className="h-4 w-4" />
-                  Say Hello
+                  <MessageCircle className="h-4 w-4" />
+                  Chat via WhatsApp
                 </Button>
               </a>
               <a href={siteConfig.resumeUrl} download>
@@ -65,12 +71,12 @@ export function Contact() {
           </div>
         </Reveal>
 
-        <div className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {cards.map((c, i) => (
             <Reveal key={c.label} delay={i * 0.08}>
               <a
                 href={c.href}
-                target={c.href.startsWith("http") ? "_blank" : undefined}
+                target={c.href?.startsWith("http") ? "_blank" : undefined}
                 rel="noreferrer"
                 className="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50"
               >

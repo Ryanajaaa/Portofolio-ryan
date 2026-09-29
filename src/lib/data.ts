@@ -11,12 +11,12 @@ export const siteConfig = {
   name: "Ryan Andiya Saputra",
   role: "Technical Support Engineer",
   roles: ["Technical Support Engineer", "Backend Developer", "Software Engineer"],
-  tagline:
-    "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.",
+  tagline: "...",
   email: "ryan.andiya11@gmail.com",
   github: "https://github.com/ryanajaaa",
   linkedin: "https://www.linkedin.com/in/ryan-andiya-saputra-301ab3372/",
   instagram: "https://www.instagram.com/ryanandiyaa_/",
+  whatsapp: "https://wa.me/6282124804548",   
   resumeUrl: "/resume.pdf",
   location: "Tangerang, Indonesia",
 };
