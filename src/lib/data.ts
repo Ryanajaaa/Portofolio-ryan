@@ -10,8 +10,8 @@ import type {
 export const siteConfig = {
   name: "Ryan Andiya Saputra",
   role: "Technical Support Engineer",
-  roles: ["Technical Support Engineer", "Backend Developer", "Software Engineer"],
-  tagline: "...",
+  roles: ["Backend Developer", "Technical Support", "Software Engineer"],
+  tagline: "My Skill is Never Give Up",
   email: "ryan.andiya11@gmail.com",
   github: "https://github.com/ryanajaaa",
   linkedin: "https://www.linkedin.com/in/ryan-andiya-saputra-301ab3372/",
