@@ -43,7 +43,7 @@ export const techStack: TechCategory[] = [
   {
     category: "Backend",
     items: [
-      { name: "Go", icon: "🐹" },
+      { name: "Go", icon: "GO" },
       { name: "Java", icon: "☕" },
       { name: "Python", icon: "🐍" },
       { name: "Laravel", icon: "🔺" },
