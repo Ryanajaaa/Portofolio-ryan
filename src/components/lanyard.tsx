@@ -13,16 +13,14 @@ import {
   type RapierRigidBody,
 } from "@react-three/rapier";
 
-/* ================= Ukuran (satuan dunia 3D) ================= */
 const CARD_W = 1.6;
 const CARD_H = 2.25;
 const CARD_T = 0.05;
 const FACE_W = 1.5;
 const FACE_H = 2.15;
 const STRAP_W = 0.24;
-const STRAP_TILE = STRAP_W * 8; // panjang tali untuk 1x pengulangan tekstur
+const STRAP_TILE = STRAP_W * 8;
 const STRAP_POINTS = 28;
-/* ============================================================ */
 
 export type LanyardProps = {
   active?: boolean;
@@ -96,7 +94,6 @@ function drawFront(
   ctx.lineWidth = 6;
   ctx.strokeRect(3, 3, w - 6, h - 6);
 
-  // Name plate
   ctx.fillStyle = "rgba(255,247,214,0.94)";
   ctx.fillRect(pad, pad, w - pad * 2, 64);
   ctx.strokeStyle = "#78350f";
@@ -127,7 +124,6 @@ function drawFront(
   ctx.textAlign = "center";
   ctx.fillText(c.initials, w - pad - 34, pad + 33);
 
-  // Bintang
   for (let i = 0; i < 8; i++) {
     const cx = w - pad - 12 - i * 26;
     const cy = pad + 64 + 26;
@@ -143,7 +139,6 @@ function drawFront(
     ctx.stroke();
   }
 
-  // Foto
   const py = 140;
   const ps = w - pad * 2;
   ctx.fillStyle = "#000";
@@ -163,7 +158,6 @@ function drawFront(
   ctx.lineWidth = 8;
   ctx.strokeRect(pad, py, ps, ps);
 
-  // Tag + deskripsi
   const by = py + ps + 16;
   const bh = h - by - pad;
   ctx.fillStyle = "rgba(255,248,225,0.95)";
@@ -555,7 +549,7 @@ export function Lanyard({
   photoSrc,
 }: LanyardProps) {
   const [camZ, setCamZ] = useState(() =>
-    window.innerWidth < 768 ? 13 : 17
+    typeof window !== "undefined" && window.innerWidth < 768 ? 13 : 17
   );
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import {
   motion,
@@ -14,11 +15,20 @@ import { ArrowRight, Download, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/data";
+import { useLanguage } from "@/lib/language-context";
+import { translations } from "@/lib/i18n";
+
+const Lanyard = dynamic(
+  () => import("@/components/lanyard").then((m) => m.Lanyard),
+  { ssr: false }
+);
 
 const CARD_TAG = "BACKEND DEVELOPER";
 const CARD_DESC =
   "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.";
 const CARD_INITIALS = "RA";
+const CARD_PHOTO = "/profile.jpeg";
+const DESKTOP_BREAKPOINT = 768;
 
 const container = {
   hidden: {},
@@ -35,24 +45,22 @@ const item = {
 };
 
 function useGreeting() {
-  const [greeting, setGreeting] = useState<{ text: string; emoji: string } | null>(
+  const { lang } = useLanguage();
+  const [key, setKey] = useState<"morning" | "afternoon" | "evening" | "night" | null>(
     null
   );
 
   useEffect(() => {
     const hour = new Date().getHours();
-    if (hour >= 4 && hour < 11) {
-      setGreeting({ text: "Selamat pagi", emoji: "☀️" });
-    } else if (hour >= 11 && hour < 15) {
-      setGreeting({ text: "Selamat siang", emoji: "🌤️" });
-    } else if (hour >= 15 && hour < 18) {
-      setGreeting({ text: "Selamat sore", emoji: "🌇" });
-    } else {
-      setGreeting({ text: "Selamat malam", emoji: "🌙" });
-    }
+    if (hour >= 4 && hour < 11) setKey("morning");
+    else if (hour >= 11 && hour < 15) setKey("afternoon");
+    else if (hour >= 15 && hour < 18) setKey("evening");
+    else setKey("night");
   }, []);
 
-  return greeting;
+  if (!key) return null;
+  const g = translations[lang].hero.greeting[key];
+  return { emoji: g.emoji, text: g.text, suffix: translations[lang].hero.greeting.suffix };
 }
 
 function RoleCycler() {
@@ -96,10 +104,9 @@ function getAbsoluteTop(el: HTMLElement): number {
 
 const strapUnits = Array.from({ length: 6 }, (_, i) => i);
 
-function IdCard() {
+function IdCard2D({ canStart }: { canStart: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [strapHeight, setStrapHeight] = useState(100);
-  const [canFall, setCanFall] = useState(false);
   const [settled, setSettled] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -127,21 +134,6 @@ function IdCard() {
 
   useEffect(() => {
     measureStrap();
-  }, [measureStrap]);
-
-  useEffect(() => {
-    function handleLoaderComplete() {
-      setCanFall(true);
-    }
-    window.addEventListener("loader-complete", handleLoaderComplete);
-    const fallback = setTimeout(() => setCanFall(true), 4000);
-    return () => {
-      window.removeEventListener("loader-complete", handleLoaderComplete);
-      clearTimeout(fallback);
-    };
-  }, []);
-
-  useEffect(() => {
     window.addEventListener("resize", measureStrap);
     return () => window.removeEventListener("resize", measureStrap);
   }, [measureStrap]);
@@ -180,10 +172,10 @@ function IdCard() {
   }
 
   return (
-    <div className="relative order-1 mx-auto w-full max-w-[210px] self-start pt-4 sm:max-w-[250px] md:order-2 md:max-w-[270px]">
+    <div className="relative mx-auto w-full max-w-[210px] pt-4 sm:max-w-[250px] md:max-w-[270px]">
       <motion.div
         initial={{ opacity: 0, y: -320 }}
-        animate={canFall ? { opacity: 1, y: 0 } : { opacity: 0, y: -320 }}
+        animate={canStart ? { opacity: 1, y: 0 } : { opacity: 0, y: -320 }}
         transition={{
           y: { type: "spring", mass: 1.2, stiffness: 170, damping: 11 },
           opacity: { duration: 0.2 },
@@ -254,7 +246,7 @@ function IdCard() {
 
               <div className="relative aspect-square w-full border-2 border-zinc-500 bg-black">
                 <Image
-                  src="/profile.jpeg"
+                  src={CARD_PHOTO}
                   alt={siteConfig.name}
                   fill
                   sizes="(max-width: 640px) 200px, 260px"
@@ -285,25 +277,87 @@ function IdCard() {
   );
 }
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= DESKTOP_BREAKPOINT);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isDesktop;
+}
+
 export function Hero() {
+  const { lang } = useLanguage();
+  const t = translations[lang].hero;
   const greeting = useGreeting();
 
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [canStart, setCanStart] = useState(false);
+  const [inView, setInView] = useState(true);
+  const isDesktop = useIsDesktop();
+
+  useEffect(() => {
+    if (isDesktop) void import("@/components/lanyard");
+  }, [isDesktop]);
+
+  useEffect(() => {
+    function handleLoaderComplete() {
+      setCanStart(true);
+    }
+    window.addEventListener("loader-complete", handleLoaderComplete);
+    const fallback = setTimeout(() => setCanStart(true), 4000);
+    return () => {
+      window.removeEventListener("loader-complete", handleLoaderComplete);
+      clearTimeout(fallback);
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <section
-      id="home"
-      className="relative flex min-h-screen items-center overflow-hidden pb-16 pt-24 sm:pb-0"
-    >
-      <Container className="relative grid items-center gap-12 sm:gap-16 md:grid-cols-[1.1fr_0.9fr]">
+    <section id="home" className="relative min-h-screen overflow-hidden">
+      <div
+        ref={stageRef}
+        aria-label="Interactive ID card. Drag to swing it."
+        className="relative z-10 flex w-full items-start justify-center pb-4 pt-24 sm:pb-0 md:absolute md:inset-y-0 md:right-0 md:h-auto md:w-1/2 md:pt-0"
+      >
+        {isDesktop === false && <IdCard2D canStart={canStart} />}
+        {isDesktop === true && canStart && (
+          <div className="h-[550px] w-full md:h-[650px] lg:h-[700px]">
+            <Lanyard
+              active={inView}
+              name={siteConfig.name}
+              initials={CARD_INITIALS}
+              tag={CARD_TAG}
+              description={CARD_DESC}
+              photoSrc={CARD_PHOTO}
+            />
+          </div>
+        )}
+      </div>
+
+      <Container className="relative grid items-center md:min-h-screen md:grid-cols-2">
         <motion.div
           variants={container}
           initial="hidden"
           animate="visible"
-          className="order-2 flex flex-col gap-6 md:order-1"
+          className="flex flex-col gap-6 pb-16 pt-[420px] sm:pt-[460px] md:py-24 md:pr-8 md:pt-24"
         >
           {greeting && (
             <motion.div variants={item}>
               <p className="font-mono text-xs text-muted">
-                {greeting.emoji} {greeting.text}, terima kasih sudah mampir!
+                {greeting.emoji} {greeting.text}, {greeting.suffix}
               </p>
             </motion.div>
           )}
@@ -311,7 +365,7 @@ export function Hero() {
           <motion.div variants={item}>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-xs text-muted">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
-              Available for new opportunities
+              {t.badge}
             </span>
           </motion.div>
 
@@ -333,26 +387,24 @@ export function Hero() {
             variants={item}
             className="max-w-lg text-balance text-sm leading-relaxed text-muted sm:text-base"
           >
-            {siteConfig.tagline}
+            {t.tagline}
           </motion.p>
 
           <motion.div variants={item} className="flex flex-wrap gap-4 pt-2">
             <a href="#projects">
               <Button>
-                View Projects
+                {t.viewProjects}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </a>
             <a href={siteConfig.resumeUrl} download>
               <Button variant="secondary">
                 <Download className="h-4 w-4" />
-                Download Resume
+                {t.downloadResume}
               </Button>
             </a>
           </motion.div>
         </motion.div>
-
-        <IdCard />
       </Container>
     </section>
   );

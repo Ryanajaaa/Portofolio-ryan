@@ -2,14 +2,32 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Languages } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { navLinks, siteConfig } from "@/lib/data";
+import { siteConfig } from "@/lib/data";
+import { useLanguage } from "@/lib/language-context";
+import { translations } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
+const sectionOrder = [
+  "home",
+  "about",
+  "projects",
+  "experience",
+  "certificates",
+  "contact",
+] as const;
+
 export function Navbar() {
+  const { lang, toggleLang } = useLanguage();
+  const t = translations[lang].nav;
+  const navLinks = sectionOrder.map((key) => ({
+    href: `#${key}`,
+    label: t[key],
+  }));
+
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeHref, setActiveHref] = useState("#home");
@@ -24,9 +42,9 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    const sections = navLinks
-      .map((link) => document.querySelector(link.href))
-      .filter((el): el is Element => el !== null);
+    const sections = sectionOrder
+      .map((key) => document.getElementById(key))
+      .filter((el): el is HTMLElement => el !== null);
 
     if (sections.length === 0) return;
 
@@ -77,9 +95,7 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   "relative rounded-full px-3.5 py-1.5 text-sm transition-colors",
-                  isActive
-                    ? "text-foreground"
-                    : "text-muted hover:text-foreground"
+                  isActive ? "text-foreground" : "text-muted hover:text-foreground"
                 )}
               >
                 {isActive && (
@@ -96,6 +112,15 @@ export function Navbar() {
         </nav>
 
         <div className="hidden shrink-0 items-center gap-2 md:flex">
+          <button
+            onClick={toggleLang}
+            aria-label={translations[lang].langToggle.label}
+            title={translations[lang].langToggle.label}
+            className="flex items-center gap-1 rounded-full border border-border px-2.5 py-1.5 font-mono text-[11px] font-medium text-muted transition-colors hover:text-foreground"
+          >
+            <Languages className="h-3.5 w-3.5" />
+            {lang.toUpperCase()}
+          </button>
           <ThemeToggle />
           <a href={siteConfig.resumeUrl} download>
             <Button size="sm">Resume</Button>
@@ -103,6 +128,13 @@ export function Navbar() {
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 md:hidden">
+          <button
+            onClick={toggleLang}
+            aria-label={translations[lang].langToggle.label}
+            className="flex h-9 items-center gap-1 rounded-full border border-border px-2 font-mono text-[11px] font-medium text-muted"
+          >
+            {lang.toUpperCase()}
+          </button>
           <ThemeToggle />
           <Button
             variant="ghost"

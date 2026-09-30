@@ -6,65 +6,45 @@ import { SectionTitle } from "@/components/ui/section-title";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/reveal";
 import { siteConfig } from "@/lib/data";
-
-const cards = [
-  {
-    icon: MessageCircle,
-    label: "WhatsApp",
-    value: "082124804548",
-    href: siteConfig.whatsapp,
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    value: siteConfig.email,
-    href: `mailto:${siteConfig.email}`,
-  },
-  {
-    icon: Linkedin,
-    label: "LinkedIn",
-    value: "/in/ryanandiya",
-    href: siteConfig.linkedin,
-  },
-  {
-    icon: Github,
-    label: "GitHub",
-    value: "ryanajaaa",
-    href: siteConfig.github,
-  },
-];
+import { useLanguage } from "@/lib/language-context";
+import { translations } from "@/lib/i18n";
 
 export function Contact() {
+  const { lang } = useLanguage();
+  const t = translations[lang].contact;
+
+  const cards = [
+    { icon: MessageCircle, label: "WhatsApp", value: "Chat langsung", href: siteConfig.whatsapp },
+    { icon: Mail, label: "Email", value: siteConfig.email, href: `mailto:${siteConfig.email}` },
+    { icon: Linkedin, label: "LinkedIn", value: "/in/ryanandiya", href: siteConfig.linkedin },
+    { icon: Github, label: "GitHub", value: "ryanajaaa", href: siteConfig.github },
+  ];
+
   return (
     <section id="contact" className="border-t border-border py-28">
       <Container>
         <SectionTitle
-          eyebrow="Get in touch"
-          title="Let's build something together"
-          description="Open to full-time roles, freelance collaborations, and interesting AI projects."
+          eyebrow={t.eyebrow}
+          title={t.title}
+          description={t.description}
           align="center"
         />
 
         <Reveal>
           <div className="mx-auto mb-14 flex max-w-xl flex-col items-center gap-4 rounded-3xl border border-border bg-card p-10 text-center">
-            <h3 className="text-xl font-semibold sm:text-2xl">
-              Have a project in mind?
-            </h3>
-            <p className="text-sm text-muted">
-              I usually reply within a day. Let&apos;s talk about how I can
-              help.
-            </p>
+            <h3 className="text-xl font-semibold sm:text-2xl">{t.cardTitle}</h3>
+            <p className="text-sm text-muted">{t.cardSubtitle}</p>
             <div className="mt-2 flex flex-wrap justify-center gap-3">
               <a href={siteConfig.whatsapp} target="_blank" rel="noreferrer">
                 <Button>
                   <MessageCircle className="h-4 w-4" />
-                  Chat via WhatsApp
+                  {t.chatButton}
                 </Button>
               </a>
               <a href={siteConfig.resumeUrl} download>
                 <Button variant="secondary">
                   <Download className="h-4 w-4" />
-                  Download CV
+                  {t.downloadButton}
                 </Button>
               </a>
             </div>
