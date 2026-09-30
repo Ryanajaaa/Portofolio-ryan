@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AnimatedBackground } from "@/components/animated-background";
+import { TabTitleSwap } from "@/components/tab-title-swap";
 import { Spotlight } from "@/components/spotlight";
 import { CommandPalette } from "@/components/command-palette";
 import { PageLoader } from "@/components/page-loader";
@@ -97,6 +98,7 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
         >
+          <TabTitleSwap />
           <PageLoader />
           <div className="pointer-events-none fixed inset-0 -z-10">
             <AnimatedBackground />
