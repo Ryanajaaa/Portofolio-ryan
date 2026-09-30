@@ -28,7 +28,6 @@ const CARD_DESC =
   "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.";
 const CARD_INITIALS = "RA";
 const CARD_PHOTO = "/profile.jpeg";
-const DESKTOP_BREAKPOINT = 768;
 
 const container = {
   hidden: {},
@@ -92,202 +91,6 @@ function RoleCycler() {
   );
 }
 
-function getAbsoluteTop(el: HTMLElement): number {
-  let top = 0;
-  let node: HTMLElement | null = el;
-  while (node) {
-    top += node.offsetTop;
-    node = node.offsetParent as HTMLElement | null;
-  }
-  return top;
-}
-
-const strapUnits = Array.from({ length: 6 }, (_, i) => i);
-
-function IdCard2D({ canStart }: { canStart: boolean }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [strapHeight, setStrapHeight] = useState(100);
-  const [settled, setSettled] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const cardRotate = useTransform(x, [-70, 70], [-14, 14]);
-  const strapLength = useTransform([x, y], (latest) => {
-    const [xv, yv] = latest as number[];
-    const dy = strapHeight + yv;
-    return Math.sqrt(xv * xv + dy * dy);
-  });
-  const strapAngle = useTransform([x, y], (latest) => {
-    const [xv, yv] = latest as number[];
-    const dy = strapHeight + yv;
-    return (Math.atan2(xv, dy) * 180) / Math.PI;
-  });
-
-  const idleControls = useRef<AnimationPlaybackControls | null>(null);
-
-  const measureStrap = useCallback(() => {
-    if (cardRef.current) {
-      setStrapHeight(Math.max(getAbsoluteTop(cardRef.current), 0));
-    }
-  }, []);
-
-  useEffect(() => {
-    measureStrap();
-    window.addEventListener("resize", measureStrap);
-    return () => window.removeEventListener("resize", measureStrap);
-  }, [measureStrap]);
-
-  const startIdleSway = useCallback(() => {
-    idleControls.current = animate(x, [-8, 8, -8], {
-      duration: 5,
-      repeat: Infinity,
-      ease: "easeInOut",
-    });
-  }, [x]);
-
-  useEffect(() => {
-    if (settled && !isDragging) startIdleSway();
-    return () => idleControls.current?.stop();
-  }, [settled, isDragging, startIdleSway]);
-
-  function handlePanStart() {
-    idleControls.current?.stop();
-    setIsDragging(true);
-  }
-  function handlePan(_: unknown, info: PanInfo) {
-    x.set(Math.max(-70, Math.min(70, info.offset.x * 0.6)));
-    y.set(Math.max(-10, Math.min(40, info.offset.y * 0.3)));
-  }
-  function handlePanEnd(_: unknown, info: PanInfo) {
-    setIsDragging(false);
-    const vx = Math.max(-40, Math.min(40, info.velocity.x * 0.03));
-    animate(x, [x.get() + vx, 0], {
-      type: "spring",
-      stiffness: 130,
-      damping: 7,
-      onComplete: startIdleSway,
-    });
-    animate(y, 0, { type: "spring", stiffness: 200, damping: 14 });
-  }
-
-  return (
-    <div className="relative mx-auto w-full max-w-[210px] pt-4 sm:max-w-[250px] md:max-w-[270px]">
-      <motion.div
-        initial={{ opacity: 0, y: -320 }}
-        animate={canStart ? { opacity: 1, y: 0 } : { opacity: 0, y: -320 }}
-        transition={{
-          y: { type: "spring", mass: 1.2, stiffness: 170, damping: 11 },
-          opacity: { duration: 0.2 },
-        }}
-        onAnimationComplete={() => setSettled(true)}
-        className="relative"
-      >
-        <motion.div
-          className="absolute left-1/2 w-7 origin-top -translate-x-1/2 overflow-hidden rounded-sm bg-black sm:w-8"
-          style={{ top: -strapHeight, height: strapLength, rotate: strapAngle }}
-        >
-          <div className="flex flex-col items-center gap-6 py-2 text-white">
-            {strapUnits.map((i) => (
-              <div key={i} className="flex flex-col items-center gap-2">
-                <span className="flex h-4 w-4 items-center justify-center rounded-full border border-white text-[8px] font-bold sm:h-5 sm:w-5 sm:text-[9px]">
-                  {CARD_INITIALS.charAt(0)}
-                </span>
-                <span
-                  className="whitespace-nowrap text-[9px] font-semibold tracking-widest sm:text-[10px]"
-                  style={{ writingMode: "vertical-rl" }}
-                >
-                  {siteConfig.name}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div
-          ref={cardRef}
-          style={{ x, y, rotate: cardRotate, touchAction: "none" }}
-          animate={
-            !settled ? { scaleX: [1, 1.08, 1], scaleY: [1, 0.92, 1] } : undefined
-          }
-          transition={{ duration: 0.35, times: [0, 0.4, 1], ease: "easeOut" }}
-          onPanStart={settled ? handlePanStart : undefined}
-          onPan={settled ? handlePan : undefined}
-          onPanEnd={settled ? handlePanEnd : undefined}
-          className={`relative select-none ${
-            settled ? (isDragging ? "cursor-grabbing" : "cursor-grab") : ""
-          }`}
-        >
-          <div className="absolute left-1/2 -top-2.5 z-10 h-4 w-3 -translate-x-1/2 rounded-full bg-black sm:-top-3 sm:h-5 sm:w-3.5" />
-
-          <motion.div
-            whileTap={settled ? { scale: 0.96 } : undefined}
-            transition={{ type: "spring", stiffness: 300, damping: 18 }}
-            className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-400 via-indigo-300/70 to-slate-600 p-[5px] shadow-2xl sm:p-[6px]"
-          >
-            <div className="relative flex aspect-[59/86] flex-col gap-1 overflow-hidden rounded-md bg-gradient-to-br from-amber-200 via-amber-300 to-amber-500 p-1.5 sm:gap-1.5 sm:p-2">
-              <div className="flex items-center justify-between border border-amber-800/70 bg-amber-100/90 px-1.5 py-0.5 sm:px-2 sm:py-1">
-                <span className="truncate font-serif text-[8px] font-bold uppercase tracking-wide text-zinc-900 sm:text-[11px]">
-                  {siteConfig.name}
-                </span>
-                <span className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-amber-900 bg-amber-50 font-serif text-[7px] font-bold text-zinc-900 sm:h-5 sm:w-5 sm:text-[8px]">
-                  {CARD_INITIALS}
-                </span>
-              </div>
-
-              <div className="flex justify-end gap-[2px] sm:gap-0.5">
-                {Array.from({ length: 8 }, (_, i) => (
-                  <span
-                    key={i}
-                    className="h-1.5 w-1.5 rounded-full border border-red-900/60 bg-gradient-to-br from-orange-300 to-red-600 sm:h-2 sm:w-2"
-                  />
-                ))}
-              </div>
-
-              <div className="relative aspect-square w-full border-2 border-zinc-500 bg-black">
-                <Image
-                  src={CARD_PHOTO}
-                  alt={siteConfig.name}
-                  fill
-                  sizes="(max-width: 640px) 200px, 260px"
-                  className="pointer-events-none object-cover object-top"
-                  priority
-                />
-              </div>
-
-              <div className="flex flex-1 flex-col justify-between border border-amber-800/70 bg-amber-50/90 px-1.5 py-1 sm:px-2">
-                <div>
-                  <p className="font-serif text-[7px] font-semibold text-zinc-900 sm:text-[9px]">
-                    [{CARD_TAG}]
-                  </p>
-                  <p className="line-clamp-4 text-[6px] leading-tight text-zinc-700 sm:text-[8px]">
-                    {CARD_DESC}
-                  </p>
-                </div>
-                <div className="flex justify-end gap-4 font-serif text-[7px] font-bold text-zinc-900 sm:text-[9px]">
-                  <span>ATK/</span>
-                  <span>DEF/</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-    </div>
-  );
-}
-
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= DESKTOP_BREAKPOINT);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-  return isDesktop;
-}
-
 export function Hero() {
   const { lang } = useLanguage();
   const t = translations[lang].hero;
@@ -296,13 +99,11 @@ export function Hero() {
   const stageRef = useRef<HTMLDivElement>(null);
   const [canStart, setCanStart] = useState(false);
   const [inView, setInView] = useState(true);
-  const isDesktop = useIsDesktop();
 
   useEffect(() => {
-    if (isDesktop) void import("@/components/lanyard");
-  }, [isDesktop]);
+    // Preload modul Lanyard untuk mobile & desktop
+    void import("@/components/lanyard");
 
-  useEffect(() => {
     function handleLoaderComplete() {
       setCanStart(true);
     }
@@ -327,14 +128,14 @@ export function Hero() {
 
   return (
     <section id="home" className="relative min-h-screen overflow-hidden">
+      {/* 3D Lanyard Container (Aktif untuk Mobile & Desktop) */}
       <div
         ref={stageRef}
         aria-label="Interactive ID card. Drag to swing it."
-        className="relative z-10 flex w-full items-start justify-center pb-4 pt-24 sm:pb-0 md:absolute md:inset-y-0 md:right-0 md:h-auto md:w-1/2 md:pt-0"
+        className="relative z-10 flex w-full items-start justify-center pb-4 pt-12 sm:pb-0 md:absolute md:inset-y-0 md:right-0 md:h-auto md:w-1/2 md:pt-0"
       >
-        {isDesktop === false && <IdCard2D canStart={canStart} />}
-        {isDesktop === true && canStart && (
-          <div className="h-[550px] w-full md:h-[650px] lg:h-[700px]">
+        {canStart && (
+          <div className="h-[460px] w-full sm:h-[550px] md:h-[650px] lg:h-[700px]">
             <Lanyard
               active={inView}
               name={siteConfig.name}
@@ -352,7 +153,7 @@ export function Hero() {
           variants={container}
           initial="hidden"
           animate="visible"
-          className="flex flex-col gap-6 pb-16 pt-[420px] sm:pt-[460px] md:py-24 md:pr-8 md:pt-24"
+          className="flex flex-col gap-6 pb-16 pt-[440px] sm:pt-[480px] md:py-24 md:pr-8 md:pt-24"
         >
           {greeting && (
             <motion.div variants={item}>
