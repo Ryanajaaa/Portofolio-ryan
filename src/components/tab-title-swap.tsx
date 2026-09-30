@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const AWAY_TITLE = "👋 Balik lagi yuk!";
+const AWAY_TITLE = "👋 Balik lagi yukkk!";
 
 export function TabTitleSwap() {
   const originalTitle = useRef("");
