@@ -75,71 +75,90 @@ function drawFront(
   if (!ctx) return;
   const w = canvas.width;
   const h = canvas.height;
-  const pad = 28;
+  const border = 16;
+  const pad = border + 16;
+
+  // Bingkai luar: gradasi ungu -> biru (warna khas situs)
+  const frame = ctx.createLinearGradient(0, 0, w, h);
+  frame.addColorStop(0, "#a78bfa");
+  frame.addColorStop(0.5, "#7c3aed");
+  frame.addColorStop(1, "#3b82f6");
+  ctx.fillStyle = frame;
+  ctx.fillRect(0, 0, w, h);
+
+  // Isi kartu: gelap, dengan cahaya memancar dari sudut atas
+  const innerX = border;
+  const innerY = border;
+  const innerW = w - border * 2;
+  const innerH = h - border * 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(innerX, innerY, innerW, innerH);
+  ctx.clip();
 
   const bg = ctx.createLinearGradient(0, 0, w, h);
-  bg.addColorStop(0, "#fde68a");
-  bg.addColorStop(0.5, "#fcd34d");
-  bg.addColorStop(1, "#d97706");
+  bg.addColorStop(0, "#1e1b4b");
+  bg.addColorStop(1, "#0a0a0f");
   ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, w, h);
+  ctx.fillRect(innerX, innerY, innerW, innerH);
 
-  const glow = ctx.createRadialGradient(w * 0.3, h * 0.25, 10, w * 0.3, h * 0.25, w * 0.9);
-  glow.addColorStop(0, "rgba(255,255,255,0.4)");
-  glow.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, w, h);
-
-  ctx.strokeStyle = "rgba(120,53,15,0.55)";
-  ctx.lineWidth = 6;
-  ctx.strokeRect(3, 3, w - 6, h - 6);
-
-  ctx.fillStyle = "rgba(255,247,214,0.94)";
-  ctx.fillRect(pad, pad, w - pad * 2, 64);
-  ctx.strokeStyle = "#78350f";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(pad, pad, w - pad * 2, 64);
-
-  const nameMax = w - pad * 2 - 16 - 64;
-  let size = 30;
-  ctx.font = `bold ${size}px ${SERIF}`;
-  while (ctx.measureText(c.name.toUpperCase()).width > nameMax && size > 14) {
-    size -= 1;
-    ctx.font = `bold ${size}px ${SERIF}`;
+  ctx.save();
+  ctx.translate(innerX + innerW * 0.5, innerY + innerH * 0.18);
+  ctx.globalAlpha = 0.18;
+  for (let i = 0; i < 24; i++) {
+    ctx.rotate((Math.PI * 2) / 24);
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, "#a78bfa");
+    grad.addColorStop(1, "rgba(167,139,250,0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(-3, 0, 6, h);
   }
-  ctx.fillStyle = "#18181b";
+  ctx.restore();
+  ctx.globalAlpha = 1;
+  ctx.restore();
+
+  ctx.strokeStyle = "rgba(255,255,255,0.35)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(innerX, innerY, innerW, innerH);
+
+  // Name plate
+  const plateY = pad;
+  ctx.fillStyle = "rgba(255,255,255,0.08)";
+  ctx.fillRect(pad, plateY, w - pad * 2, 60);
+  ctx.strokeStyle = "rgba(255,255,255,0.25)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(pad, plateY, w - pad * 2, 60);
+
+  const nameMax = w - pad * 2 - 16 - 56;
+  let size = 26;
+  ctx.font = `bold ${size}px ${SANS}`;
+  while (ctx.measureText(c.name.toUpperCase()).width > nameMax && size > 13) {
+    size -= 1;
+    ctx.font = `bold ${size}px ${SANS}`;
+  }
+  ctx.fillStyle = "#ffffff";
   ctx.textBaseline = "middle";
   ctx.textAlign = "left";
-  ctx.fillText(c.name.toUpperCase(), pad + 14, pad + 33);
+  ctx.fillText(c.name.toUpperCase(), pad + 14, plateY + 30);
 
   ctx.beginPath();
-  ctx.arc(w - pad - 34, pad + 32, 22, 0, Math.PI * 2);
-  ctx.fillStyle = "#fffbeb";
+  ctx.arc(w - pad - 30, plateY + 30, 20, 0, Math.PI * 2);
+  const badgeGrad = ctx.createLinearGradient(w - pad - 50, 0, w - pad - 10, 0);
+  badgeGrad.addColorStop(0, "#7c3aed");
+  badgeGrad.addColorStop(1, "#3b82f6");
+  ctx.fillStyle = badgeGrad;
   ctx.fill();
-  ctx.strokeStyle = "#78350f";
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(255,255,255,0.6)";
+  ctx.lineWidth = 2;
   ctx.stroke();
-  ctx.fillStyle = "#18181b";
-  ctx.font = `bold 18px ${SERIF}`;
+  ctx.fillStyle = "#ffffff";
+  ctx.font = `bold 16px ${SANS}`;
   ctx.textAlign = "center";
-  ctx.fillText(c.initials, w - pad - 34, pad + 33);
+  ctx.fillText(c.initials, w - pad - 30, plateY + 30);
 
-  for (let i = 0; i < 8; i++) {
-    const cx = w - pad - 12 - i * 26;
-    const cy = pad + 64 + 26;
-    const g = ctx.createRadialGradient(cx - 3, cy - 3, 1, cx, cy, 11);
-    g.addColorStop(0, "#fdba74");
-    g.addColorStop(1, "#dc2626");
-    ctx.beginPath();
-    ctx.arc(cx, cy, 10, 0, Math.PI * 2);
-    ctx.fillStyle = g;
-    ctx.fill();
-    ctx.strokeStyle = "rgba(127,29,29,0.7)";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
-
-  const py = 140;
+  // Foto
+  const py = plateY + 76;
   const ps = w - pad * 2;
   ctx.fillStyle = "#000";
   ctx.fillRect(pad, py, ps, ps);
@@ -154,33 +173,28 @@ function drawFront(
     ctx.drawImage(img, pad + (ps - dw) / 2, py, dw, dh);
     ctx.restore();
   }
-  ctx.strokeStyle = "#71717a";
-  ctx.lineWidth = 8;
+  ctx.strokeStyle = "rgba(255,255,255,0.4)";
+  ctx.lineWidth = 3;
   ctx.strokeRect(pad, py, ps, ps);
 
+  // Tag + deskripsi
   const by = py + ps + 16;
   const bh = h - by - pad;
-  ctx.fillStyle = "rgba(255,248,225,0.95)";
+  ctx.fillStyle = "rgba(255,255,255,0.08)";
   ctx.fillRect(pad, by, w - pad * 2, bh);
-  ctx.strokeStyle = "#78350f";
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(255,255,255,0.25)";
+  ctx.lineWidth = 2;
   ctx.strokeRect(pad, by, w - pad * 2, bh);
 
   ctx.textAlign = "left";
-  ctx.fillStyle = "#18181b";
-  ctx.font = `bold 22px ${SERIF}`;
+  ctx.fillStyle = "#c4b5fd";
+  ctx.font = `bold 20px ${SANS}`;
   ctx.fillText(`[${c.tag}]`, pad + 14, by + 26);
 
   ctx.font = `15px ${SANS}`;
-  ctx.fillStyle = "#3f3f46";
+  ctx.fillStyle = "rgba(255,255,255,0.75)";
   const lines = wrapText(ctx, c.description, w - pad * 2 - 28, 3);
   lines.forEach((l, i) => ctx.fillText(l, pad + 14, by + 54 + i * 19));
-
-  ctx.font = `bold 20px ${SERIF}`;
-  ctx.fillStyle = "#18181b";
-  ctx.textAlign = "right";
-  ctx.fillText("DEF/", w - pad - 14, by + bh - 16);
-  ctx.fillText("ATK/", w - pad - 130, by + bh - 16);
 }
 
 function drawBack(canvas: HTMLCanvasElement, c: CardContent) {
@@ -191,20 +205,23 @@ function drawBack(canvas: HTMLCanvasElement, c: CardContent) {
 
   const bg = ctx.createLinearGradient(0, 0, w, h);
   bg.addColorStop(0, "#1e1b4b");
-  bg.addColorStop(1, "#4c1d95");
+  bg.addColorStop(1, "#0a0a0f");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, w, h);
 
-  ctx.strokeStyle = "#fbbf24";
-  ctx.lineWidth = 8;
-  ctx.strokeRect(20, 20, w - 40, h - 40);
+  const frameGrad = ctx.createLinearGradient(0, 0, w, h);
+  frameGrad.addColorStop(0, "#a78bfa");
+  frameGrad.addColorStop(1, "#3b82f6");
+  ctx.strokeStyle = frameGrad;
+  ctx.lineWidth = 10;
+  ctx.strokeRect(14, 14, w - 28, h - 28);
 
   ctx.beginPath();
   ctx.arc(w / 2, h / 2 - 30, 150, 0, Math.PI * 2);
   ctx.lineWidth = 6;
   ctx.stroke();
 
-  ctx.fillStyle = "#fbbf24";
+  ctx.fillStyle = "#c4b5fd";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.font = `bold 110px ${SERIF}`;
