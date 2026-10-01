@@ -7,12 +7,17 @@ import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Reveal } from "@/components/reveal";
 import { certificates } from "@/lib/data";
+import { useLanguage } from "@/lib/language-context";
+import { translations } from "@/lib/i18n";
 
 export function Certificates() {
+  const { lang } = useLanguage();
+  const t = translations[lang].certificates;
+
   return (
     <section id="certificates" className="border-t border-border py-28">
       <Container>
-        <SectionTitle eyebrow="Credentials" title="Certificates" />
+        <SectionTitle eyebrow={t.eyebrow} title={t.title} />
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {certificates.map((cert, i) => (
@@ -36,9 +41,7 @@ export function Certificates() {
                     {cert.icon}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <h3 className="truncate text-sm font-semibold">
-                      {cert.name}
-                    </h3>
+                    <h3 className="truncate text-sm font-semibold">{cert.name}</h3>
                     <p className="text-xs text-muted">
                       {cert.issuer} &middot; {cert.year}
                     </p>
