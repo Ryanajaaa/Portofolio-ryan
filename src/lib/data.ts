@@ -185,7 +185,7 @@ export const certificates: Certificate[] = [
     name: "Python Fundamental for Data Science",
     issuer: "DQLAB",
     year: "Sep 2023",
-    icon: "✦",
+    icon: "🐍", 
     image: "/certificates/Python-foundations.png",
   },
 ];
