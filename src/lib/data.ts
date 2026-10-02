@@ -58,11 +58,12 @@ export const techStack: TechCategory[] = [
     ],
   },
   {
-    category: "Infrastructure",
+    category: "Tools",
     items: [
-      { name: "Docker", icon: "🐳" },
-      { name: "VMware", icon: "VM" },
-      { name: "Linux", icon: "🐧" },
+        { name: "Docker", icon: "🐳" },
+        { name: "VMware", icon: "VM" },
+        { name: "Linux", icon: "🐧" },
+        { name: "Git", icon: "🔀" },
     ],
   },
   {

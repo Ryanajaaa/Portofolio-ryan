@@ -28,7 +28,7 @@ export function TechStack() {
                 </h3>
               </Container>
 
-              {/* HP: marquee bergerak otomatis */}
+            
               <div className="block md:hidden">
                 <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
                   <div
@@ -56,7 +56,7 @@ export function TechStack() {
                 </div>
               </div>
 
-              {/* Desktop: grid statis, tidak bergerak */}
+      
               <Container className="hidden md:block">
                 <div className="grid grid-cols-4 gap-3 lg:grid-cols-6">
                   {cat.items.map((item) => (

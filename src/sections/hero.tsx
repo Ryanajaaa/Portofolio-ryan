@@ -128,7 +128,6 @@ export function Hero() {
 
   return (
     <section id="home" className="relative min-h-screen overflow-hidden">
-      {/* 3D Lanyard Container (Aktif untuk Mobile & Desktop) */}
       <div
         ref={stageRef}
         aria-label="Interactive ID card. Drag to swing it."
