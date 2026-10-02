@@ -181,4 +181,11 @@ export const certificates: Certificate[] = [
     icon: "🐳",
     image: "/certificates/Docker.png",
   },
+    {
+    name: "Python Fundamental for Data Science",
+    issuer: "DQLAB",
+    year: "Sep 2023",
+    icon: "✦",
+    image: "/certificates/Python-foundations.png",
+  },
 ];
