@@ -338,26 +338,37 @@ function Band({
     const s = document.createElement("canvas");
     s.width = 1024;
     s.height = 128;
-    drawFront(f, null, content);
-    drawBack(b, content);
-    drawStrap(s, content);
     return { frontCanvas: f, backCanvas: b, strapCanvas: s };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const frontTex = useMemo(() => makeTexture(frontCanvas), [frontCanvas]);
   const backTex = useMemo(() => makeTexture(backCanvas), [backCanvas]);
   const strapTex = useMemo(() => makeTexture(strapCanvas, true), [strapCanvas]);
 
+  const loadedImgRef = useRef<HTMLImageElement | null>(null);
+
+  // Muat foto profil sekali setiap kali photoSrc berubah
   useEffect(() => {
     const img = new Image();
     img.onload = () => {
+      loadedImgRef.current = img;
       drawFront(frontCanvas, img, content);
       frontTex.needsUpdate = true;
     };
     img.src = photoSrc;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photoSrc]);
+
+  // Gambar ulang teks kartu setiap kali nama/tag/deskripsi berubah (mis. ganti bahasa)
+  useEffect(() => {
+    drawFront(frontCanvas, loadedImgRef.current, content);
+    drawBack(backCanvas, content);
+    drawStrap(strapCanvas, content);
+    frontTex.needsUpdate = true;
+    backTex.needsUpdate = true;
+    strapTex.needsUpdate = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content.name, content.initials, content.tag, content.description]);
 
   useEffect(() => {
     return () => {

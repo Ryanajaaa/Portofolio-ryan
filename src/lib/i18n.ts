@@ -21,6 +21,12 @@ export const translations = {
       },
       tagline:
         "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.",
+      card: {
+        tag: "BACKEND DEVELOPER",
+        description:
+          "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.",
+        initials: "RA",
+      },
     },
     about: {
       eyebrow: "About me",
@@ -61,6 +67,9 @@ export const translations = {
       title: "Featured Projects",
       description:
         "A mix of AI products, backend systems, and full-stack platforms.",
+      github: "GitHub",
+      liveDemo: "Live Demo",
+      features: "Features",
     },
     experience: {
       eyebrow: "Journey",
@@ -110,6 +119,12 @@ export const translations = {
       },
       tagline:
         "Saya membangun aplikasi web, sistem backend, dan solusi berbasis AI yang skalabel menggunakan teknologi modern.",
+      card: {
+        tag: "BACKEND DEVELOPER",
+        description:
+          "Saya membangun aplikasi web, sistem backend, dan solusi berbasis AI yang skalabel menggunakan teknologi modern.",
+        initials: "RA",
+      },
     },
     about: {
       eyebrow: "Tentang saya",
@@ -150,6 +165,9 @@ export const translations = {
       title: "Proyek Unggulan",
       description:
         "Perpaduan produk AI, sistem backend, dan platform full-stack.",
+      github: "GitHub",
+      liveDemo: "Demo Langsung",
+      features: "Fitur",
     },
     experience: {
       eyebrow: "Perjalanan",
@@ -181,7 +199,7 @@ export const translations = {
 
 export type Translations = typeof translations;
 
-
+/** Terjemahan deskripsi project, dikunci dengan `title` persis dari lib/data.ts */
 export const projectDescriptionsId: Record<string, string> = {
   "ProyekKantin CRUD":
     "Sistem manajemen kantin CRUD (Create, Read, Update, Delete) dibangun dengan PHP native, menangani menu, pesanan, dan catatan transaksi.",
@@ -195,6 +213,7 @@ export const projectDescriptionsId: Record<string, string> = {
     "Boilerplate REST API berperforma tinggi dengan autentikasi, rate limiting, dan observability bawaan.",
 };
 
+/** Terjemahan deskripsi pengalaman kerja, dikunci dengan `company` persis dari lib/data.ts */
 export const experienceDescriptionsId: Record<string, string> = {
   "PT EXEED INDO JAYA":
     "Memberikan dukungan teknis 24/7 untuk lingkungan VMware vSphere dengan menangani masalah pada infrastruktur klien melalui sistem portal tiket. Membantu dukungan instalasi, manajemen dokumentasi kasus, dan penyelesaian masalah terkait platform virtualisasi.",

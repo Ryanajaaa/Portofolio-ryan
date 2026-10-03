@@ -1,16 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  animate,
-  type PanInfo,
-  type AnimationPlaybackControls,
-} from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Download, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
@@ -23,10 +15,6 @@ const Lanyard = dynamic(
   { ssr: false }
 );
 
-const CARD_TAG = "BACKEND DEVELOPER";
-const CARD_DESC =
-  "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.";
-const CARD_INITIALS = "RA";
 const CARD_PHOTO = "/profile.jpeg";
 
 const container = {
@@ -128,6 +116,7 @@ export function Hero() {
 
   return (
     <section id="home" className="relative min-h-screen overflow-hidden">
+      {/* 3D Lanyard Container (Aktif untuk Mobile & Desktop) */}
       <div
         ref={stageRef}
         aria-label="Interactive ID card. Drag to swing it."
@@ -138,9 +127,9 @@ export function Hero() {
             <Lanyard
               active={inView}
               name={siteConfig.name}
-              initials={CARD_INITIALS}
-              tag={CARD_TAG}
-              description={CARD_DESC}
+              initials={t.card.initials}
+              tag={t.card.tag}
+              description={t.card.description}
               photoSrc={CARD_PHOTO}
             />
           </div>

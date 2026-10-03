@@ -67,7 +67,7 @@ export function Projects() {
                         className="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-foreground"
                       >
                         <Github className="h-3.5 w-3.5" />
-                        GitHub
+                        {t.github}
                       </a>
                     )}
                     {p.demo && (
@@ -78,7 +78,7 @@ export function Projects() {
                         className="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-primary"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
-                        Live Demo
+                        {t.liveDemo}
                       </a>
                     )}
                     {p.features && (
@@ -87,7 +87,7 @@ export function Projects() {
                         className="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-foreground"
                       >
                         <ListChecks className="h-3.5 w-3.5" />
-                        Features
+                        {t.features}
                       </a>
                     )}
                   </div>
