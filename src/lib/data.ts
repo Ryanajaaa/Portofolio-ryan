@@ -123,7 +123,7 @@ export const projects: Project[] = [
   {
     title: "REST API Backend",
     description:
-      "A high-throughput REST API boilerplate with auth, rate limiting, and observability built in.",
+      "REST API for Indonesian administrative regions, providing structured data for provinces, regencies, cities, and districts.",
     image: "/projects/rest-api.png",
     tags: ["Go", "PostgreSQL", "Postman"],
     github: "https://github.com/Ryanajaaa/api_wilayahs_indonesia",

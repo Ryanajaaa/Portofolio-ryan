@@ -210,7 +210,7 @@ export const projectDescriptionsId: Record<string, string> = {
   "Jungle Runner — Scratch Game":
     "Platformer 2D berbasis blok dibangun dengan Scratch, menampilkan animasi sprite, deteksi tabrakan, efek suara, dan kondisi game over yang dipicu oleh event broadcast.",
   "REST API Backend":
-    "Boilerplate REST API berperforma tinggi dengan autentikasi, rate limiting, dan observability bawaan.",
+    "REST API yang menyediakan data terstruktur wilayah administratif Indonesia, meliputi provinsi, kabupaten, kota, dan kecamatan.",
 };
 
 
