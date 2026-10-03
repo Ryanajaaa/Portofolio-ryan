@@ -15,7 +15,7 @@ const Lanyard = dynamic(
   { ssr: false }
 );
 
-const CARD_PHOTO = "/profile.jpeg";
+const CARD_PHOTO = "/profile.png";
 
 const container = {
   hidden: {},

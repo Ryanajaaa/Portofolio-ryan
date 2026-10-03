@@ -22,9 +22,9 @@ export const translations = {
       tagline:
         "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.",
       card: {
-        tag: "BACKEND DEVELOPER",
+        tag: "INFORMATIC STUDENT",
         description:
-          "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.",
+          "MY SKILL IS NEVER GIVE UP",
         initials: "RA",
       },
     },

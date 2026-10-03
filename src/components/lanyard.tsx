@@ -356,10 +356,10 @@ function Band({
       frontTex.needsUpdate = true;
     };
     img.src = photoSrc;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [photoSrc]);
 
-  // Gambar ulang teks kartu setiap kali nama/tag/deskripsi berubah (mis. ganti bahasa)
+ 
   useEffect(() => {
     drawFront(frontCanvas, loadedImgRef.current, content);
     drawBack(backCanvas, content);
@@ -367,7 +367,7 @@ function Band({
     frontTex.needsUpdate = true;
     backTex.needsUpdate = true;
     strapTex.needsUpdate = true;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [content.name, content.initials, content.tag, content.description]);
 
   useEffect(() => {

@@ -108,7 +108,7 @@ export function PageLoader() {
 
               <div className="absolute inset-2 overflow-hidden rounded-full border border-border">
                 <Image
-                  src="/profile.jpeg"
+                  src="/profile.png"
                   alt={siteConfig.name}
                   fill
                   sizes="96px"
