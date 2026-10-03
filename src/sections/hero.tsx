@@ -89,7 +89,6 @@ export function Hero() {
   const [inView, setInView] = useState(true);
 
   useEffect(() => {
-    // Preload modul Lanyard untuk mobile & desktop
     void import("@/components/lanyard");
 
     function handleLoaderComplete() {
@@ -113,10 +112,9 @@ export function Hero() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
-
   return (
     <section id="home" className="relative min-h-screen overflow-hidden">
-      {/* 3D Lanyard Container (Aktif untuk Mobile & Desktop) */}
+
       <div
         ref={stageRef}
         aria-label="Interactive ID card. Drag to swing it."
@@ -131,6 +129,7 @@ export function Hero() {
               tag={t.card.tag}
               description={t.card.description}
               photoSrc={CARD_PHOTO}
+              backPhotoSrc="/profile-back.jpeg"
             />
           </div>
         )}

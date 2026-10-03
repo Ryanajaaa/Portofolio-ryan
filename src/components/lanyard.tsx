@@ -29,6 +29,8 @@ export type LanyardProps = {
   tag: string;
   description: string;
   photoSrc: string;
+  /** Foto khusus untuk sisi belakang kartu. Kalau tidak diisi, pakai photoSrc yang sama. */
+  backPhotoSrc?: string;
 };
 
 type CardContent = Pick<
@@ -197,7 +199,11 @@ function drawFront(
   lines.forEach((l, i) => ctx.fillText(l, pad + 14, by + 54 + i * 19));
 }
 
-function drawBack(canvas: HTMLCanvasElement, c: CardContent) {
+function drawBack(
+  canvas: HTMLCanvasElement,
+  img: HTMLImageElement | null,
+  c: CardContent
+) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   const w = canvas.width;
@@ -216,21 +222,41 @@ function drawBack(canvas: HTMLCanvasElement, c: CardContent) {
   ctx.lineWidth = 10;
   ctx.strokeRect(14, 14, w - 28, h - 28);
 
+  // Foto bulat (ganti dari teks inisial)
+  const cx = w / 2;
+  const cy = h / 2 - 30;
+  const r = 150;
+
+  ctx.save();
   ctx.beginPath();
-  ctx.arc(w / 2, h / 2 - 30, 150, 0, Math.PI * 2);
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.clip();
+
+  if (img && img.width > 0) {
+    const s = Math.max((r * 2) / img.width, (r * 2) / img.height);
+    const dw = img.width * s;
+    const dh = img.height * s;
+    ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
+  } else {
+    ctx.fillStyle = "#000";
+    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+  }
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(255,255,255,0.5)";
   ctx.lineWidth = 6;
   ctx.stroke();
 
-  ctx.fillStyle = "#c4b5fd";
+  ctx.fillStyle = "#ffffff";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.font = `bold 110px ${SERIF}`;
-  ctx.fillText(c.initials, w / 2, h / 2 - 30);
-
   ctx.font = `bold 26px ${SERIF}`;
   ctx.fillText(c.name.toUpperCase(), w / 2, h / 2 + 200);
   ctx.font = `16px ${SANS}`;
-  ctx.fillStyle = "rgba(251,191,36,0.8)";
+  ctx.fillStyle = "#c4b5fd";
   ctx.fillText("PORTFOLIO", w / 2, h / 2 + 235);
 }
 
@@ -295,9 +321,11 @@ function makeTexture(canvas: HTMLCanvasElement, repeat = false) {
 function Band({
   content,
   photoSrc,
+  backPhotoSrc,
 }: {
   content: CardContent;
   photoSrc: string;
+  backPhotoSrc: string;
 }) {
   const fixed = useRef<RapierRigidBody>(null!);
   const j1 = useRef<RapierRigidBody>(null!);
@@ -345,29 +373,42 @@ function Band({
   const backTex = useMemo(() => makeTexture(backCanvas), [backCanvas]);
   const strapTex = useMemo(() => makeTexture(strapCanvas, true), [strapCanvas]);
 
-  const loadedImgRef = useRef<HTMLImageElement | null>(null);
+  const loadedFrontImgRef = useRef<HTMLImageElement | null>(null);
+  const loadedBackImgRef = useRef<HTMLImageElement | null>(null);
 
-  // Muat foto profil sekali setiap kali photoSrc berubah
+  // Muat foto depan
   useEffect(() => {
     const img = new Image();
     img.onload = () => {
-      loadedImgRef.current = img;
+      loadedFrontImgRef.current = img;
       drawFront(frontCanvas, img, content);
       frontTex.needsUpdate = true;
     };
     img.src = photoSrc;
-    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photoSrc]);
 
- 
+  // Muat foto belakang (boleh beda dari foto depan)
   useEffect(() => {
-    drawFront(frontCanvas, loadedImgRef.current, content);
-    drawBack(backCanvas, content);
+    const img = new Image();
+    img.onload = () => {
+      loadedBackImgRef.current = img;
+      drawBack(backCanvas, img, content);
+      backTex.needsUpdate = true;
+    };
+    img.src = backPhotoSrc;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [backPhotoSrc]);
+
+  // Gambar ulang teks kartu setiap kali nama/tag/deskripsi berubah (mis. ganti bahasa)
+  useEffect(() => {
+    drawFront(frontCanvas, loadedFrontImgRef.current, content);
+    drawBack(backCanvas, loadedBackImgRef.current, content);
     drawStrap(strapCanvas, content);
     frontTex.needsUpdate = true;
     backTex.needsUpdate = true;
     strapTex.needsUpdate = true;
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content.name, content.initials, content.tag, content.description]);
 
   useEffect(() => {
@@ -575,6 +616,7 @@ export function Lanyard({
   tag,
   description,
   photoSrc,
+  backPhotoSrc,
 }: LanyardProps) {
   const [camZ, setCamZ] = useState(() =>
     typeof window !== "undefined" && window.innerWidth < 768 ? 13 : 17
@@ -604,7 +646,7 @@ export function Lanyard({
       <ambientLight intensity={1.6} />
       <directionalLight position={[4, 6, 8]} intensity={2.2} />
       <Physics gravity={[0, -40, 0]} timeStep={1 / 60} paused={!active}>
-        <Band content={content} photoSrc={photoSrc} />
+        <Band content={content} photoSrc={photoSrc} backPhotoSrc={backPhotoSrc ?? photoSrc} />
       </Physics>
     </Canvas>
   );
