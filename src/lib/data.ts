@@ -8,17 +8,28 @@ import type {
 } from "@/types";
 
 export const siteConfig = {
-  name: "Ryan Andiya Saputra",
+  name: process.env.NEXT_PUBLIC_SITE_NAME ?? "Ryan Andiya Saputra",
   role: "Technical Support Engineer",
-  roles: ["Backend Developer", "Technical Support", "Software Engineer"],
-  tagline: "My Skill is Never Give Up",
-  email: "ryan.andiya11@gmail.com",
-  github: "https://github.com/ryanajaaa",
-  linkedin: "https://www.linkedin.com/in/ryan-andiya-saputra-301ab3372/",
-  instagram: "https://www.instagram.com/ryanandiyaa_/",
-  whatsapp: "https://wa.me/6282124804548",   
-  resumeUrl: "/resume.pdf",
-  location: "Tangerang, Indonesia",
+  roles: [
+    "Technical Support Engineer",
+    "Backend Developer",
+    "Software Engineer",
+  ],
+  tagline:
+    "I build scalable web applications, backend systems, and AI-powered solutions using modern technologies.",
+  email: process.env.NEXT_PUBLIC_SITE_EMAIL ?? "ryan.andiya11@gmail.com",
+  github:
+    process.env.NEXT_PUBLIC_SITE_GITHUB ?? "https://github.com/ryanajaaa",
+  linkedin:
+    process.env.NEXT_PUBLIC_SITE_LINKEDIN ??
+    "https://www.linkedin.com/in/ryan-andiya-saputra-301ab3372/",
+  instagram:
+    process.env.NEXT_PUBLIC_SITE_INSTAGRAM ??
+    "https://www.instagram.com/ryanandiyaa_/",
+  whatsapp:
+    process.env.NEXT_PUBLIC_SITE_WHATSAPP ?? "https://wa.me/6281234567890",
+  resumeUrl: process.env.NEXT_PUBLIC_SITE_RESUME_URL ?? "/resume.pdf",
+  location: process.env.NEXT_PUBLIC_SITE_LOCATION ?? "Tangerang, Indonesia",
 };
 
 export const navLinks = [
@@ -43,7 +54,7 @@ export const techStack: TechCategory[] = [
   {
     category: "Backend",
     items: [
-      { name: "Go", icon: "GO" },
+      { name: "Go", icon: "🐹" },
       { name: "Java", icon: "☕" },
       { name: "Python", icon: "🐍" },
       { name: "Laravel", icon: "🔺" },
@@ -58,12 +69,11 @@ export const techStack: TechCategory[] = [
     ],
   },
   {
-    category: "Tools",
+    category: "Infrastructure",
     items: [
-        { name: "Docker", icon: "🐳" },
-        { name: "VMware", icon: "VM" },
-        { name: "Linux", icon: "🐧" },
-        { name: "Git", icon: "🔀" },
+      { name: "Docker", icon: "🐳" },
+      { name: "VMware", icon: "VM" },
+      { name: "Linux", icon: "🐧" },
     ],
   },
   {
@@ -74,7 +84,6 @@ export const techStack: TechCategory[] = [
       { name: "Claude", icon: "✳" },
       { name: "Cursor", icon: "▲" },
       { name: "AntiGravity", icon: "⚛" },
-
     ],
   },
 ];
@@ -173,19 +182,5 @@ export const certificates: Certificate[] = [
     year: "Nov 2025",
     icon: "🐧",
     image: "/certificates/linux-dari-nol.png",
-  },  
-  {
-    name: "Dari Server Fisik Ke Docker",
-    issuer: "ID-Networkers (IDN.ID)",
-    year: "Sep 2026",
-    icon: "🐳",
-    image: "/certificates/Docker.png",
-  },
-    {
-    name: "Python Fundamental for Data Science",
-    issuer: "DQLAB",
-    year: "Sep 2023",
-    icon: "🐍", 
-    image: "/certificates/Python-foundations.png",
   },
 ];
