@@ -199,7 +199,7 @@ export const translations = {
 
 export type Translations = typeof translations;
 
-/** Terjemahan deskripsi project, dikunci dengan `title` persis dari lib/data.ts */
+
 export const projectDescriptionsId: Record<string, string> = {
   "ProyekKantin CRUD":
     "Sistem manajemen kantin CRUD (Create, Read, Update, Delete) dibangun dengan PHP native, menangani menu, pesanan, dan catatan transaksi.",
@@ -213,7 +213,7 @@ export const projectDescriptionsId: Record<string, string> = {
     "Boilerplate REST API berperforma tinggi dengan autentikasi, rate limiting, dan observability bawaan.",
 };
 
-/** Terjemahan deskripsi pengalaman kerja, dikunci dengan `company` persis dari lib/data.ts */
+
 export const experienceDescriptionsId: Record<string, string> = {
   "PT EXEED INDO JAYA":
     "Memberikan dukungan teknis 24/7 untuk lingkungan VMware vSphere dengan menangani masalah pada infrastruktur klien melalui sistem portal tiket. Membantu dukungan instalasi, manajemen dokumentasi kasus, dan penyelesaian masalah terkait platform virtualisasi.",
