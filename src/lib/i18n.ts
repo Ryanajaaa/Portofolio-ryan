@@ -120,9 +120,9 @@ export const translations = {
       tagline:
         "Saya membangun aplikasi web, sistem backend, dan solusi berbasis AI yang skalabel menggunakan teknologi modern.",
       card: {
-        tag: "BACKEND DEVELOPER",
+        tag: "MAHASISWA INFORMATIKA",
         description:
-          "Saya membangun aplikasi web, sistem backend, dan solusi berbasis AI yang skalabel menggunakan teknologi modern.",
+          "Kemampuan saya adalah tidak menyerah",
         initials: "RA",
       },
     },
