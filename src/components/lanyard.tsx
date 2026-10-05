@@ -29,7 +29,6 @@ export type LanyardProps = {
   tag: string;
   description: string;
   photoSrc: string;
-  /** Foto khusus untuk sisi belakang kartu. Kalau tidak diisi, pakai photoSrc yang sama. */
   backPhotoSrc?: string;
 };
 

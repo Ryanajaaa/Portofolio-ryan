@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Ryan Andiya — Technical Support & Backend Developer",
+    name: "Ryan Andiya — Informatic Student",
     short_name: "Ryan Andiya",
     description:
-      "Portfolio of Ryan Andiya, an Technical Support and Backend Developer.",
+      "Portfolio of Ryan Andiya Saputra, an Informatic Student.",
     start_url: "/",
     display: "standalone",
     background_color: "#09090b",
