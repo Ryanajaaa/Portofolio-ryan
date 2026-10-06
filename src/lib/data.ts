@@ -163,7 +163,7 @@ export const projects: Project[] = [
     tags: ["Scratch", "Game Development", "Block-based Programming"],
   },
   {
-    title: "REST API Backend",
+    title: "REST API Backend With Go",
     slug: "rest-api-backend",
     description:
       "A high-throughput REST API boilerplate with auth, rate limiting, and observability built in.",
