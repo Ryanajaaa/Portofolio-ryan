@@ -24,7 +24,7 @@ export const translations = {
       card: {
         tag: "INFORMATIC STUDENT",
         description:
-          "MY SKILL IS NEVER GIVE UP",
+          "My Skill Is never Give Up",
         initials: "RA",
       },
     },
@@ -96,6 +96,18 @@ export const translations = {
     langToggle: {
       label: "Switch to Indonesian",
     },
+    projectDetail: {
+      back: "Back to Projects",
+      overview: "Overview",
+      highlights: "Highlights",
+      myRole: "My Role",
+      techStack: "Tech Stack",
+      viewGithub: "View on GitHub",
+      liveDemo: "Live Demo",
+      moreProjects: "More Projects",
+      notFoundTitle: "Project not found",
+      notFoundDesc: "The project you're looking for doesn't exist.",
+    },
   },
   id: {
     nav: {
@@ -122,7 +134,7 @@ export const translations = {
       card: {
         tag: "MAHASISWA INFORMATIKA",
         description:
-          "Kemampuan saya adalah tidak menyerah",
+          "Kemampuan saya adalah Tidak Menyerah.",
         initials: "RA",
       },
     },
@@ -194,12 +206,24 @@ export const translations = {
     langToggle: {
       label: "Ganti ke Bahasa Inggris",
     },
+    projectDetail: {
+      back: "Kembali ke Proyek",
+      overview: "Ringkasan",
+      highlights: "Yang Dikerjakan",
+      myRole: "Peran Saya",
+      techStack: "Tech Stack",
+      viewGithub: "Lihat di GitHub",
+      liveDemo: "Demo Langsung",
+      moreProjects: "Proyek Lainnya",
+      notFoundTitle: "Proyek tidak ditemukan",
+      notFoundDesc: "Proyek yang Anda cari tidak ada.",
+    },
   },
 } as const;
 
 export type Translations = typeof translations;
 
-
+/** Terjemahan deskripsi project, dikunci dengan `title` persis dari lib/data.ts */
 export const projectDescriptionsId: Record<string, string> = {
   "ProyekKantin CRUD":
     "Sistem manajemen kantin CRUD (Create, Read, Update, Delete) dibangun dengan PHP native, menangani menu, pesanan, dan catatan transaksi.",
@@ -210,13 +234,81 @@ export const projectDescriptionsId: Record<string, string> = {
   "Jungle Runner — Scratch Game":
     "Platformer 2D berbasis blok dibangun dengan Scratch, menampilkan animasi sprite, deteksi tabrakan, efek suara, dan kondisi game over yang dipicu oleh event broadcast.",
   "REST API Backend":
-    "REST API yang menyediakan data terstruktur wilayah administratif Indonesia, meliputi provinsi, kabupaten, kota, dan kecamatan.",
+    "Boilerplate REST API berperforma tinggi dengan autentikasi, rate limiting, dan observability bawaan.",
 };
 
-
+/** Terjemahan deskripsi pengalaman kerja, dikunci dengan `company` persis dari lib/data.ts */
 export const experienceDescriptionsId: Record<string, string> = {
   "PT EXEED INDO JAYA":
     "Memberikan dukungan teknis 24/7 untuk lingkungan VMware vSphere dengan menangani masalah pada infrastruktur klien melalui sistem portal tiket. Membantu dukungan instalasi, manajemen dokumentasi kasus, dan penyelesaian masalah terkait platform virtualisasi.",
   "PT LOKASOLUSI":
     "Membantu mengembangkan dan memelihara layanan backend menggunakan Go, berkolaborasi dengan tim lintas fungsi untuk menghasilkan solusi perangkat lunak berkualitas tinggi.",
+};
+
+
+/** Terjemahan konten detail project, dikunci dengan `slug` persis dari lib/data.ts */
+export const projectDetailsId: Record<
+  string,
+  { longDescription: string[]; highlights: string[]; role: string }
+> = {
+  "proyekkantin-crud": {
+    longDescription: [
+      "ProyekKantin CRUD adalah sistem manajemen kantin yang dibangun dengan PHP native, dirancang untuk membantu pengelola kantin kecil mengatur operasional harian tanpa bergantung pada catatan kertas atau spreadsheet.",
+      "Sistem ini menangani seluruh siklus data kantin: menambah dan memperbarui menu, mencatat pesanan pelanggan, dan menyimpan catatan transaksi. Dibangun dari nol menggunakan PHP murni dan MySQL, tanpa framework, untuk melatih konsep backend dasar seperti routing, penanganan form, dan query database.",
+    ],
+    highlights: [
+      "Operasi CRUD lengkap untuk menu dan transaksi",
+      "Dibangun dengan PHP native dan MySQL, tanpa dependensi framework",
+      "Skema database sederhana dan jelas, dirancang untuk kebutuhan bisnis kecil",
+    ],
+    role: "Developer solo — merancang skema database, membangun logika backend, dan membuat antarmukanya.",
+  },
+  "perpustakaan-mvc": {
+    longDescription: [
+      "Perpustakaan MVC adalah sistem manajemen perpustakaan yang dibangun dengan Laravel, mengikuti arsitektur Model-View-Controller. Proyek ini dibuat untuk melatih penyusunan aplikasi yang lebih besar menggunakan framework yang tepat, setelah sebelumnya banyak bekerja dengan PHP native.",
+      "Proyek ini mencakup alur kerja inti yang dibutuhkan perpustakaan: mengelola katalog buku, mencatat data anggota, dan merekam transaksi peminjaman serta pengembalian.",
+    ],
+    highlights: [
+      "Mengikuti pola MVC Laravel untuk pemisahan tanggung jawab yang rapi",
+      "Mencakup katalog buku, manajemen anggota, dan transaksi peminjaman",
+      "Menggunakan Eloquent ORM dan template Blade",
+    ],
+    role: "Developer solo — membangun struktur aplikasi, model, controller, dan tampilan.",
+  },
+  "pc-hardware-assembly-troubleshooting": {
+    longDescription: [
+      "Proyek ini bukan tentang kode, melainkan pengalaman langsung dengan hardware — sesuatu yang saya anggap sama pentingnya untuk peran Technical Support. Prosesnya meliputi membongkar, membersihkan, dan merakit ulang PC desktop, termasuk pemasangan motherboard dan RAM, serta mendiagnosis power supply.",
+      "Bekerja langsung dengan hardware membantu saya memahami bagaimana komponen yang menjalankan software saya benar-benar bekerja secara fisik — konteks yang berguna saat troubleshooting masalah yang bisa jadi dari sisi hardware maupun software.",
+    ],
+    highlights: [
+      "Instalasi motherboard dan RAM",
+      "Diagnosis dan pengujian power supply",
+      "Pembersihan komponen menyeluruh untuk keandalan jangka panjang",
+    ],
+    role: "Teknisi langsung — mendiagnosis, memperbaiki, dan merakit ulang unit PC.",
+  },
+  "jungle-runner-scratch-game": {
+    longDescription: [
+      "Jungle Runner adalah platformer 2D kecil yang dibangun dengan Scratch, lingkungan pemrograman visual berbasis blok dari MIT. Meski sederhana dibanding proyek lain saya, ini cara yang menyenangkan untuk memikirkan logika game — animasi sprite, deteksi tabrakan, dan kondisi game — tanpa harus pusing dengan sintaks.",
+      "Game ini punya kondisi game over sederhana yang dipicu oleh event broadcast, serta efek suara untuk membuat pengalaman bermain lebih menarik.",
+    ],
+    highlights: [
+      "Logika animasi sprite dan pergerakan",
+      "Deteksi tabrakan antara pemain dan rintangan",
+      "Kondisi game over dipicu oleh event broadcast",
+    ],
+    role: "Developer solo — merancang dan membangun seluruh logika game di Scratch.",
+  },
+  "rest-api-backend": {
+    longDescription: [
+      "Boilerplate REST API yang dibangun dengan Go, dirancang sebagai titik awal yang bisa dipakai ulang untuk proyek backend. Alih-alih membangun produk spesifik, tujuannya adalah menyusun komponen-komponen yang dibutuhkan setiap API production: autentikasi, rate limiting, dan observability.",
+      "Proyek ini mencerminkan minat saya pada backend engineering — fokus pada \"pipa air\" yang membuat API andal dan siap produksi, bukan sekadar berfungsi.",
+    ],
+    highlights: [
+      "Autentikasi dan rate limiting bawaan",
+      "Terstruktur untuk observability (hook logging/monitoring)",
+      "Dibangun dengan Go demi performa dan kesederhanaan",
+    ],
+    role: "Developer solo — merancang struktur API dan middleware utamanya.",
+  },
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Github, ExternalLink, ListChecks } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
@@ -29,7 +30,10 @@ export function Projects() {
                 key={`${p.title}-${idx}`}
                 className="group flex h-[440px] w-[320px] shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-10px_rgba(124,58,237,0.4)] sm:w-[380px]"
               >
-                <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-surface">
+                <Link
+                  href={`/projects/${p.slug}`}
+                  className="relative aspect-video w-full shrink-0 overflow-hidden bg-surface"
+                >
                   <Image
                     src={p.image}
                     alt={p.title}
@@ -42,11 +46,15 @@ export function Projects() {
                       Featured
                     </span>
                   )}
-                </div>
+                </Link>
 
                 <div className="flex flex-1 flex-col gap-3 p-6">
                   <div>
-                    <h3 className="mb-2 line-clamp-1 text-lg font-semibold">{p.title}</h3>
+                    <Link href={`/projects/${p.slug}`}>
+                      <h3 className="mb-2 line-clamp-1 text-lg font-semibold transition-colors hover:text-primary">
+                        {p.title}
+                      </h3>
+                    </Link>
                     <p className="line-clamp-3 text-sm leading-relaxed text-muted">
                       {description}
                     </p>
