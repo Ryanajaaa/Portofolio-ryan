@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Github, ExternalLink, ListChecks } from "lucide-react";
@@ -10,9 +11,68 @@ import { projects } from "@/lib/data";
 import { useLanguage } from "@/lib/language-context";
 import { translations, projectDescriptionsId } from "@/lib/i18n";
 
+const SPEED_PX_PER_FRAME = 0.6;
+
+function useAutoScroll(containerRef: React.RefObject<HTMLDivElement | null>) {
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+  const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReduced) return;
+
+    let raf: number;
+    let half = el.scrollWidth / 2;
+
+    function measure() {
+      if (el) half = el.scrollWidth / 2;
+    }
+    measure();
+    window.addEventListener("resize", measure);
+
+    function tick() {
+      if (el && !pausedRef.current) {
+        el.scrollLeft += SPEED_PX_PER_FRAME;
+        if (el.scrollLeft >= half) {
+          el.scrollLeft -= half;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", measure);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const pauseNow = useCallback(() => {
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+    setPaused(true);
+  }, []);
+
+  const resumeSoon = useCallback((delay = 1200) => {
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+    resumeTimer.current = setTimeout(() => setPaused(false), delay);
+  }, []);
+
+  return { pauseNow, resumeSoon };
+}
+
 export function Projects() {
   const { lang } = useLanguage();
   const t = translations[lang].projects;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { pauseNow, resumeSoon } = useAutoScroll(scrollRef);
 
   return (
     <section id="projects" className="border-t border-border py-28">
@@ -20,8 +80,18 @@ export function Projects() {
         <SectionTitle eyebrow={t.eyebrow} title={t.title} description={t.description} />
       </Container>
 
-      <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
-        <div className="flex w-max animate-marquee gap-6 px-6 py-1 [animation-duration:48s] hover:[animation-play-state:paused] md:px-10">
+      <div className="relative [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+        <div
+          ref={scrollRef}
+          onPointerEnter={pauseNow}
+          onPointerLeave={() => resumeSoon(0)}
+          onPointerDown={pauseNow}
+          onPointerUp={() => resumeSoon()}
+          onTouchStart={pauseNow}
+          onTouchEnd={() => resumeSoon()}
+          className="flex gap-6 overflow-x-auto px-6 py-1 [-ms-overflow-style:none] [scrollbar-width:none] md:px-10 [&::-webkit-scrollbar]:hidden"
+          style={{ scrollBehavior: "auto" }}
+        >
           {[...projects, ...projects].map((p, idx) => {
             const description =
               lang === "id" ? projectDescriptionsId[p.title] ?? p.description : p.description;
@@ -32,12 +102,14 @@ export function Projects() {
               >
                 <Link
                   href={`/projects/${p.slug}`}
+                  draggable={false}
                   className="relative aspect-video w-full shrink-0 overflow-hidden bg-surface"
                 >
                   <Image
                     src={p.image}
                     alt={p.title}
                     fill
+                    draggable={false}
                     sizes="(max-width: 640px) 320px, 380px"
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
