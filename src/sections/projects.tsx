@@ -52,7 +52,6 @@ function useAutoScroll(containerRef: React.RefObject<HTMLDivElement | null>) {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", measure);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pauseNow = useCallback(() => {
