@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Ryan Andiya — Informatic Student",
+    name: "Ryan Andiya Saputra — Informatic Student",
     short_name: "Ryan Andiya",
     description:
       "Portfolio of Ryan Andiya Saputra, an Informatic Student.",
