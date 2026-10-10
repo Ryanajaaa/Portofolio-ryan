@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     "Ryan Andiya",
     "Technical Support",
     "Backend Developer",
-    "Software Engineer",
+    "Junior Web Developer",
   ],
   authors: [{ name: "Ryan Andiya Saputra", url: siteUrl }],
   creator: "Ryan Andiya Saputra",

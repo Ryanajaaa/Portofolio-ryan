@@ -7,7 +7,7 @@ import type {
 
 export const siteConfig = {
   name: process.env.NEXT_PUBLIC_SITE_NAME ?? "Ryan Andiya Saputra",
-  role: "Technical Support Engineer",
+  role: "Junior Web Developer",
   roles: [
     "Technical Support Engineer",
     "Backend Developer",
