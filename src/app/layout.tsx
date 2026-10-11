@@ -7,6 +7,7 @@ import { CommandPalette } from "@/components/command-palette";
 import { PageLoader } from "@/components/page-loader";
 import { TabTitleSwap } from "@/components/tab-title-swap";
 import { LanguageProvider } from "@/lib/language-context";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import "./globals.css";
 
 const geist = Geist({
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     "Ryan Andiya",
     "Technical Support",
     "Backend Developer",
-    "Junior Web Developer",
+    "Software Engineer",
   ],
   authors: [{ name: "Ryan Andiya Saputra", url: siteUrl }],
   creator: "Ryan Andiya Saputra",
@@ -100,6 +101,7 @@ export default function RootLayout({
           enableSystem={false}
         >
           <LanguageProvider>
+            <SmoothScroll />
             <TabTitleSwap />
             <PageLoader />
             <div className="pointer-events-none fixed inset-0 -z-10">

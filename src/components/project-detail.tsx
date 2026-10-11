@@ -6,6 +6,7 @@ import { ArrowLeft, Github, ExternalLink } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ParallaxImage } from "@/components/parallax-image";
 import { projects } from "@/lib/data";
 import type { Project } from "@/types";
 import { useLanguage } from "@/lib/language-context";
@@ -52,10 +53,9 @@ export function ProjectDetail({ project }: { project: Project }) {
         </h1>
 
         <div className="relative mb-10 aspect-video w-full overflow-hidden rounded-2xl border border-border bg-surface">
-          <Image
+          <ParallaxImage
             src={project.image}
             alt={project.title}
-            fill
             sizes="(max-width: 896px) 100vw, 896px"
             className="object-cover"
             priority

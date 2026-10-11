@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Github, ExternalLink, ListChecks } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionTitle } from "@/components/ui/section-title";
 import { Badge } from "@/components/ui/badge";
+import { ParallaxImage } from "@/components/parallax-image";
 import { projects } from "@/lib/data";
 import { useLanguage } from "@/lib/language-context";
 import { translations, projectDescriptionsId } from "@/lib/i18n";
@@ -52,6 +52,7 @@ function useAutoScroll(containerRef: React.RefObject<HTMLDivElement | null>) {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", measure);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pauseNow = useCallback(() => {
@@ -104,10 +105,9 @@ export function Projects() {
                   draggable={false}
                   className="relative aspect-video w-full shrink-0 overflow-hidden bg-surface"
                 >
-                  <Image
+                  <ParallaxImage
                     src={p.image}
                     alt={p.title}
-                    fill
                     draggable={false}
                     sizes="(max-width: 640px) 320px, 380px"
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
