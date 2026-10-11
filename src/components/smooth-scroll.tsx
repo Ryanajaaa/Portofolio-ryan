@@ -44,11 +44,9 @@ export function SmoothScroll() {
       try {
         target = document.querySelector(decodeURIComponent(url.hash));
       } catch {
-        return; // hash bukan selector yang valid
+        return; 
       }
       if (!target) return;
-
-      // Cegah <Link> Next.js ikut melompat secara instan
       e.preventDefault();
       e.stopPropagation();
       lenis.scrollTo(target as HTMLElement, { duration: 1.2 });
