@@ -8,6 +8,7 @@ export const translations = {
       certificates: "Certificates",
       contact: "Contact",
     },
+    
     hero: {
       badge: "Available for new opportunities",
       viewProjects: "View Projects",
