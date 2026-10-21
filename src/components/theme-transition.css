@@ -1,0 +1,22 @@
+/* Efek ganti tema: lingkaran melebar dari tombol (lihat theme-toggle.tsx).
+   Aturan ::view-transition hanya berlaku selama transisi berjalan. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* Matikan transisi warna selama pergantian tema (mis. transition pada body
+   dan kartu) supaya tepi lingkaran tegas, tidak berbaur dengan warna lama. */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
